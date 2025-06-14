@@ -2,15 +2,17 @@ import { Feather } from '@expo/vector-icons';
 import { router, useLocalSearchParams, useNavigation } from 'expo-router';
 import React, { useLayoutEffect } from 'react';
 import { Image, SafeAreaView, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { appConfig } from '../../data/config';
 
 export default function CourseDetailScreen() {
   const navigation = useNavigation();
+  const insets = useSafeAreaInsets();
   const { id } = useLocalSearchParams();
   
   // For demo purposes, we'll use the featured course data
   const course = appConfig.featuredCourse;
-  const instructorAvatar = appConfig.instructor.avatar; // Using instructor avatar from appConfig
+  const instructorAvatar = appConfig.instructor.avatar;
   
   const lessons = [
     { id: '1', title: 'Introduction to Modern JavaScript', duration: '15:30', completed: true },
@@ -20,7 +22,6 @@ export default function CourseDetailScreen() {
     { id: '5', title: 'Hooks in Detail', duration: '20:35', completed: false },
   ];
 
-  // Disable the default header
   useLayoutEffect(() => {
     navigation.setOptions({
       headerShown: false,
@@ -29,7 +30,11 @@ export default function CourseDetailScreen() {
 
   return (
     <SafeAreaView className="flex-1 bg-gray-50">
-      <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
+      <ScrollView 
+        className="flex-1" 
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ paddingBottom: insets.bottom + 20 }}
+      >
         {/* Header */}
         <View className="px-6 py-4 bg-white flex-row items-center">
           <TouchableOpacity 
@@ -53,7 +58,7 @@ export default function CourseDetailScreen() {
               <Feather name="play" size={24} color="white" />
             </TouchableOpacity>
           </View>
-          
+
           <Text className="text-2xl font-bold text-gray-800 mb-2">{course.title}</Text>
           <Text className="text-gray-600 mb-4">{course.description}</Text>
           
@@ -68,7 +73,7 @@ export default function CourseDetailScreen() {
               <Text className="text-gray-500 text-sm">Course Instructor</Text>
             </View>
           </View>
-          
+
           <View className="flex-row items-center space-x-6 mb-6">
             <View className="flex-row items-center">
               <Text className="text-yellow-500 mr-1">⭐</Text>
@@ -83,64 +88,64 @@ export default function CourseDetailScreen() {
               <Text className="text-gray-700">{course.duration}</Text>
             </View>
           </View>
-        </View>
 
-        {/* Course Content */}
-        <View className="px-6 py-4">
-          <Text className="text-xl font-bold text-gray-800 mb-4">Course Content</Text>
-          
-          <View className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-            {lessons.map((lesson, index) => (
-              <TouchableOpacity
-                key={lesson.id}
-                className={`p-4 flex-row items-center ${
-                  index !== lessons.length - 1 ? 'border-b border-gray-100' : ''
-                }`}
-              >
-                <View className={`w-8 h-8 rounded-full items-center justify-center mr-4 ${
-                  lesson.completed ? 'bg-green-500' : 'bg-gray-200'
-                }`}>
-                  <Text className={`text-sm ${
-                    lesson.completed ? 'text-white' : 'text-gray-600'
+          {/* Course Content */}
+          <View className="px-6 py-4">
+            <Text className="text-xl font-bold text-gray-800 mb-4">Course Content</Text>
+            
+            <View className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+              {lessons.map((lesson, index) => (
+                <TouchableOpacity
+                  key={lesson.id}
+                  className={`p-4 flex-row items-center ${
+                    index !== lessons.length - 1 ? 'border-b border-gray-100' : ''
+                  }`}
+                >
+                  <View className={`w-8 h-8 rounded-full items-center justify-center mr-4 ${
+                    lesson.completed ? 'bg-green-500' : 'bg-gray-200'
                   }`}>
-                    {lesson.completed ? '✓' : index + 1}
-                  </Text>
-                </View>
-                
-                <View className="flex-1">
-                  <Text className={`font-semibold mb-1 ${
-                    lesson.completed ? 'text-gray-800' : 'text-gray-600'
-                  }`}>
-                    {lesson.title}
-                  </Text>
-                  <Text className="text-gray-500 text-sm">{lesson.duration}</Text>
-                </View>
-                
-                {!lesson.completed && (
-                  <TouchableOpacity className="w-8 h-8 bg-purple-100 rounded-full items-center justify-center">
-                    <Feather name="play" size={16} color="#7C3AED" />
-                  </TouchableOpacity>
-                )}
-              </TouchableOpacity>
-            ))}
+                    <Text className={`text-sm ${
+                      lesson.completed ? 'text-white' : 'text-gray-600'
+                    }`}>
+                      {lesson.completed ? '✓' : index + 1}
+                    </Text>
+                  </View>
+                  
+                  <View className="flex-1">
+                    <Text className={`font-semibold mb-1 ${
+                      lesson.completed ? 'text-gray-800' : 'text-gray-600'
+                    }`}>
+                      {lesson.title}
+                    </Text>
+                    <Text className="text-gray-500 text-sm">{lesson.duration}</Text>
+                  </View>
+                  
+                  {!lesson.completed && (
+                    <TouchableOpacity className="w-8 h-8 bg-purple-100 rounded-full items-center justify-center">
+                      <Feather name="play" size={16} color="#7C3AED" />
+                    </TouchableOpacity>
+                  )}
+                </TouchableOpacity>
+              ))}
+            </View>
           </View>
-        </View>
 
-        {/* Action Buttons */}
-        <View className="px-6 py-6 pb-8">
-          <TouchableOpacity className="bg-purple-600 rounded-2xl p-4 mb-3">
-            <Text className="text-white text-center font-semibold text-lg">
-              Continue Learning
-            </Text>
-          </TouchableOpacity>
-          
-          <TouchableOpacity className="bg-white border border-purple-600 rounded-2xl p-4">
-            <Text className="text-purple-600 text-center font-semibold text-lg">
-              Download for Offline
-            </Text>
-          </TouchableOpacity>
+          {/* Action Buttons */}
+          <View className="px-6 py-6">
+            <TouchableOpacity className="bg-purple-600 rounded-2xl p-4 mb-3">
+              <Text className="text-white text-center font-semibold text-lg">
+                Continue Learning
+              </Text>
+            </TouchableOpacity>
+            
+            <TouchableOpacity className="bg-white border border-purple-600 rounded-2xl p-4">
+              <Text className="text-purple-600 text-center font-semibold text-lg">
+                Download for Offline
+              </Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </ScrollView>
     </SafeAreaView>
   );
-}
+} 

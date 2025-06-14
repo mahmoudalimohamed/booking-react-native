@@ -33,7 +33,6 @@ export default function WatchScreen() {
       course: 'Our Amazing Body',
     },
   ];
-  
 
   return (
     <SafeAreaView className="flex-1 bg-gray-50">
@@ -132,4 +131,4 @@ export default function WatchScreen() {
       </ScrollView>
     </SafeAreaView>
   );
-}
+} 

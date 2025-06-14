@@ -1,14 +1,12 @@
 import { Feather, Ionicons, MaterialIcons } from '@expo/vector-icons';
 import React from 'react';
 import {
-    Image,
-    Platform,
-    SafeAreaView,
-    ScrollView,
-    StatusBar,
-    Text,
-    TouchableOpacity,
-    View,
+  Image,
+  SafeAreaView,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View
 } from 'react-native';
 import { appConfig } from '../../data/config';
 
@@ -44,43 +42,47 @@ export default function ProfileScreen() {
   ];
 
   return (
-    <SafeAreaView
-      className="flex-1 bg-white"
-      style={{ paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0 }}
-    >
-      <ScrollView showsVerticalScrollIndicator={false} className="flex-1">
-        {/* Profile Header */}
-        <View className="px-6 pt-8 pb-6 bg-white border-b border-gray-200">
-          <View className="items-center">
-            <View className="w-24 h-24 rounded-full items-center justify-center mb-4">
-              <Image
-                source={instructor.avatar}
-                className="w-24 h-24 rounded-full"
-                resizeMode="cover"
-              />
-            </View>
-            <Text className="text-xl font-semibold text-gray-900">{instructor.name}</Text>
-            <Text className="text-sm text-gray-500">{instructor.title}</Text>
-          </View>
+    <SafeAreaView className="flex-1 bg-gray-50">
+      <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
+        {/* Header */}
+        <View className="px-6 py-6 bg-white">
+          <Text className="text-2xl font-bold text-gray-800 mb-2">Profile</Text>
+          <Text className="text-gray-500">Manage your account settings</Text>
+        </View>
 
-          {/* Stats */}
-          <View className="flex-row justify-around mt-6">
-            <View className="items-center">
-              <Text className="text-lg font-bold text-purple-600">12</Text>
-              <Text className="text-gray-500 text-xs">Courses</Text>
+        {/* Profile Info */}
+        <View className="px-6 py-6">
+          <View className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+            <View className="items-center mb-4">
+              <View className="w-24 h-24 rounded-full overflow-hidden mb-4">
+                <Image
+                  source={instructor.avatar}
+                  className="w-full h-full"
+                  resizeMode="cover"
+                />
+              </View>
+              <Text className="text-xl font-bold text-gray-800 mb-1">{instructor.name}</Text>
+              <Text className="text-gray-500">{instructor.title}</Text>
             </View>
-            <View className="items-center">
-              <Text className="text-lg font-bold text-purple-600">45h</Text>
-              <Text className="text-gray-500 text-xs">Learning</Text>
-            </View>
-            <View className="items-center">
-              <Text className="text-lg font-bold text-purple-600">4.9</Text>
-              <Text className="text-gray-500 text-xs">Rating</Text>
+
+            <View className="flex-row justify-between">
+              <View className="items-center">
+                <Text className="text-2xl font-bold text-gray-800">12</Text>
+                <Text className="text-gray-500 text-sm">Courses</Text>
+              </View>
+              <View className="items-center">
+                <Text className="text-2xl font-bold text-gray-800">4.8</Text>
+                <Text className="text-gray-500 text-sm">Rating</Text>
+              </View>
+              <View className="items-center">
+                <Text className="text-2xl font-bold text-gray-800">85%</Text>
+                <Text className="text-gray-500 text-sm">Progress</Text>
+              </View>
             </View>
           </View>
         </View>
 
-        {/* Menu Section */}
+        {/* Menu Items */}
         <View className="px-6 pt-6 pb-10">
           <Text className="text-sm font-medium text-gray-500 mb-4">Account</Text>
           <View className="space-y-4">
@@ -114,4 +116,4 @@ export default function ProfileScreen() {
       </ScrollView>
     </SafeAreaView>
   );
-}
+} 

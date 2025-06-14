@@ -3,7 +3,6 @@ import React from 'react';
 import { SafeAreaView, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 
 export default function ScheduleScreen() {
-
   const upcomingClasses = [
     {
       id: '1',
@@ -36,7 +35,6 @@ export default function ScheduleScreen() {
       icon: 'heart',
     },
   ];
-  
 
   return (
     <SafeAreaView className="flex-1 bg-gray-50">
@@ -108,7 +106,7 @@ export default function ScheduleScreen() {
                     <Text className="text-lg font-bold text-gray-800">{classItem.title}</Text>
                     <View className="flex-row items-center bg-purple-100 px-3 py-1 rounded-full">
                       <Feather
-                        name={classItem.icon as any}
+                        name={classItem.icon}
                         size={14}
                         color="#7C3AED"
                         className="mr-1"
@@ -128,7 +126,6 @@ export default function ScheduleScreen() {
                     </View>
 
                     <TouchableOpacity className="bg-purple-600 px-6 py-2 rounded-full flex-row items-center space-x-2">
-                      {/* <Feather name="log-in" size={16} color="white" /> */}
                       <Text className="text-white font-semibold">Join</Text>
                     </TouchableOpacity>
                   </View>
@@ -140,4 +137,4 @@ export default function ScheduleScreen() {
       </ScrollView>
     </SafeAreaView>
   );
-}
+} 

@@ -1,4 +1,3 @@
-import { ImageSourcePropType } from 'react-native';
 
 // LOCAL IMAGE IMPORTS (Update these with your actual icons)
 import avatarBiology from '../assets/images/avatar-biology.png';
@@ -15,51 +14,7 @@ import iconPhysics from '../assets/images/icon-physics.png';
 
 import instructorImg from '../assets/images/instructor.png';
 
-export interface AppConfig {
-  appName: string;
-  welcomeMessage: string;
-  primaryColor: string;
-  accentColor: string;
-  instructor: {
-    name: string;
-    avatar: ImageSourcePropType;
-    title: string;
-  };
-  featuredCourse: {
-    title: string;
-    subtitle: string;
-    description: string;
-    instructor: string;
-    rating: number;
-    lessons: number;
-    duration: string;
-    image: ImageSourcePropType;
-    tag: string;
-  };
-  categories: string[];
-  ongoingCourses: Array<{
-    id: string;
-    title: string;
-    instructor: string;
-    instructorAvatar: ImageSourcePropType;
-    progress: number;
-    icon: ImageSourcePropType;
-  }>;
-  courses: Array<{
-    id: string;
-    title: string;
-    instructor: string;
-    instructorAvatar: ImageSourcePropType;
-    rating: number;
-    lessons: number;
-    duration: string;
-    price: number;
-    image: ImageSourcePropType;
-    category: string;
-  }>;
-}
-
-export const appConfig: AppConfig = {
+export const appConfig = {
   appName: "ScienceBuddy",
   welcomeMessage: "Ready to explore science ?",
   primaryColor: "#0EA5E9", // blue
@@ -150,4 +105,4 @@ export const appConfig: AppConfig = {
       category: "Biology",
     },
   ],
-};
+}; 
