@@ -17,6 +17,7 @@ export default function HomeScreen() {
     <SafeAreaView className="flex-1 bg-gray-50">
       <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
         <View style={{ padding: 10 }}></View>
+
         {/* Header */}
         <View className="px-6 py-4 bg-white">
           <View className="flex-row items-center justify-between mb-4">

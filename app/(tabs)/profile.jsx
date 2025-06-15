@@ -1,43 +1,44 @@
-import { Feather, Ionicons, MaterialIcons } from '@expo/vector-icons';
-import React from 'react';
+import { Feather, Ionicons, MaterialIcons } from "@expo/vector-icons";
+import { Link } from "expo-router";
 import {
   Image,
   SafeAreaView,
   ScrollView,
   Text,
   TouchableOpacity,
-  View
-} from 'react-native';
-import { appConfig } from '../../data/config';
-
+  View,
+} from "react-native";
+import { appConfig } from "../../data/config";
 export default function ProfileScreen() {
   const { instructor } = appConfig;
 
   const menuItems = [
     {
       icon: <Feather name="user" size={20} color="#6B7280" />,
-      title: 'Edit Profile',
-      subtitle: 'Update your personal information',
+      title: "Edit Profile",
+      subtitle: "Update your personal information",
     },
     {
       icon: <Feather name="bar-chart-2" size={20} color="#6B7280" />,
-      title: 'My Progress',
-      subtitle: 'Track your learning journey',
+      title: "My Progress",
+      subtitle: "Track your learning journey",
     },
     {
-      icon: <Ionicons name="cloud-download-outline" size={20} color="#6B7280" />,
-      title: 'Downloads',
-      subtitle: 'Your offline content',
+      icon: (
+        <Ionicons name="cloud-download-outline" size={20} color="#6B7280" />
+      ),
+      title: "Downloads",
+      subtitle: "Your offline content",
     },
     {
       icon: <Feather name="help-circle" size={20} color="#6B7280" />,
-      title: 'Help & Support',
-      subtitle: 'FAQs & contact',
+      title: "Help & Support",
+      subtitle: "FAQs & contact",
     },
     {
       icon: <Feather name="settings" size={20} color="#6B7280" />,
-      title: 'Settings',
-      subtitle: 'Preferences & themes',
+      title: "Settings",
+      subtitle: "Preferences & themes",
     },
   ];
 
@@ -45,9 +46,18 @@ export default function ProfileScreen() {
     <SafeAreaView className="flex-1 bg-gray-50">
       <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
         {/* Header */}
+
         <View className="px-6 py-6 bg-white">
           <Text className="text-2xl font-bold text-gray-800 mb-2">Profile</Text>
           <Text className="text-gray-500">Manage your account settings</Text>
+        </View>
+        <View className="flex-row justify-center">
+          <Text className="text-gray-600">if you have account? </Text>
+          <Link href="/login" asChild>
+            <TouchableOpacity>
+              <Text className="text-blue-600 font-medium">Login</Text>
+            </TouchableOpacity>
+          </Link>
         </View>
 
         {/* Profile Info */}
@@ -61,7 +71,9 @@ export default function ProfileScreen() {
                   resizeMode="cover"
                 />
               </View>
-              <Text className="text-xl font-bold text-gray-800 mb-1">{instructor.name}</Text>
+              <Text className="text-xl font-bold text-gray-800 mb-1">
+                {instructor.name}
+              </Text>
               <Text className="text-gray-500">{instructor.title}</Text>
             </View>
 
@@ -84,7 +96,9 @@ export default function ProfileScreen() {
 
         {/* Menu Items */}
         <View className="px-6 pt-6 pb-10">
-          <Text className="text-sm font-medium text-gray-500 mb-4">Account</Text>
+          <Text className="text-sm font-medium text-gray-500 mb-4">
+            Account
+          </Text>
           <View className="space-y-4">
             {menuItems.map((item, index) => (
               <TouchableOpacity
@@ -96,8 +110,12 @@ export default function ProfileScreen() {
                     {item.icon}
                   </View>
                   <View className="flex-1">
-                    <Text className="text-base font-medium text-gray-800">{item.title}</Text>
-                    <Text className="text-xs text-gray-500">{item.subtitle}</Text>
+                    <Text className="text-base font-medium text-gray-800">
+                      {item.title}
+                    </Text>
+                    <Text className="text-xs text-gray-500">
+                      {item.subtitle}
+                    </Text>
                   </View>
                   <Text className="text-gray-300 text-xl ml-2">›</Text>
                 </View>
@@ -109,11 +127,13 @@ export default function ProfileScreen() {
           <View className="mt-8">
             <TouchableOpacity className="flex-row items-center justify-center bg-red-50 py-3 rounded-xl border border-red-100 active:opacity-90">
               <MaterialIcons name="logout" size={20} color="#DC2626" />
-              <Text className="text-base font-semibold text-red-600 ml-2">Logout</Text>
+              <Text className="text-base font-semibold text-red-600 ml-2">
+                Logout
+              </Text>
             </TouchableOpacity>
           </View>
         </View>
       </ScrollView>
     </SafeAreaView>
   );
-} 
+}
