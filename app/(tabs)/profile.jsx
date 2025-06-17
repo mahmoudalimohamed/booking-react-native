@@ -9,7 +9,13 @@ import {
   View,
 } from "react-native";
 import { appConfig } from "../../data/config";
+import { useUser } from "../../hooks/useUser";
+
 export default function ProfileScreen() {
+  const { user, logout } = useUser();
+  const name = user?.name || "Visitor";
+  const email = user?.email || "";
+  const userId = user?.targets?.[0]?.userId || "";
   const { instructor } = appConfig;
 
   const menuItems = [
@@ -46,7 +52,6 @@ export default function ProfileScreen() {
     <SafeAreaView className="flex-1 bg-gray-50">
       <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
         {/* Header */}
-
         <View className="px-6 py-6 bg-white">
           <Text className="text-2xl font-bold text-gray-800 mb-2">Profile</Text>
           <Text className="text-gray-500">Manage your account settings</Text>
@@ -72,9 +77,8 @@ export default function ProfileScreen() {
                 />
               </View>
               <Text className="text-xl font-bold text-gray-800 mb-1">
-                {instructor.name}
+                {name}
               </Text>
-              <Text className="text-gray-500">{instructor.title}</Text>
             </View>
 
             <View className="flex-row justify-between">
@@ -125,7 +129,10 @@ export default function ProfileScreen() {
 
           {/* Logout */}
           <View className="mt-8">
-            <TouchableOpacity className="flex-row items-center justify-center bg-red-50 py-3 rounded-xl border border-red-100 active:opacity-90">
+            <TouchableOpacity
+              className="flex-row items-center justify-center bg-red-50 py-3 rounded-xl border border-red-100 active:opacity-90"
+              onPress={logout}
+            >
               <MaterialIcons name="logout" size={20} color="#DC2626" />
               <Text className="text-base font-semibold text-red-600 ml-2">
                 Logout

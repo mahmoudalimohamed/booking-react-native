@@ -26,7 +26,7 @@ export default function Register() {
     setIsLoading(true);
     try {
       await register(email, password, name);
-      router.replace("/");
+      router.replace("/(tabs)");
     } catch (error) {
       setError(error.message || "Registration failed. Please try again.");
       setIsLoading(false);
@@ -51,6 +51,7 @@ export default function Register() {
             autoCorrect={false}
           />
         </View>
+
         {/* Email Input */}
         <View className="mb-4">
           <Text className="text-gray-700 font-medium mb-2">Email</Text>

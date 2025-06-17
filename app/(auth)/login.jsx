@@ -1,3 +1,4 @@
+import { MaterialIcons } from "@expo/vector-icons";
 import { Link, router } from "expo-router";
 import { useState } from "react";
 import { Text, TextInput, TouchableOpacity, View } from "react-native";
@@ -9,7 +10,7 @@ export default function Login() {
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  const { user, login } = useUser();
+  const { user, login, logout } = useUser();
 
   const isFormValid = email.trim() && password.trim() && password.length >= 8;
 
@@ -18,7 +19,7 @@ export default function Login() {
     setIsLoading(true);
     try {
       await login(email, password);
-      router.replace("/");
+      router.replace("/(tabs)/home");
     } catch (error) {
       setError(error.message || "Login failed. Please try again");
       setIsLoading(false);
@@ -80,11 +81,24 @@ export default function Login() {
         {/* Register Link */}
         <View className="flex-row justify-center">
           <Text className="text-gray-600">Don't have an account? </Text>
-          <Link href="/register" asChild>
+          <Link href="/(auth)/register" asChild>
             <TouchableOpacity>
               <Text className="text-blue-600 font-medium">Register here</Text>
             </TouchableOpacity>
           </Link>
+        </View>
+
+        {/* Logout */}
+        <View className="mt-8">
+          <TouchableOpacity
+            className="flex-row items-center justify-center bg-red-50 py-3 rounded-xl border border-red-100 active:opacity-90"
+            onPress={logout}
+          >
+            <MaterialIcons name="logout" size={20} color="#DC2626" />
+            <Text className="text-base font-semibold text-red-600 ml-2">
+              Logout
+            </Text>
+          </TouchableOpacity>
         </View>
       </View>
     </View>
