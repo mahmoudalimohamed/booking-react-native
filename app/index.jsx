@@ -5,8 +5,11 @@ const index = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Welcome</Text>
-      <Button title="🔐 Login" onPress={() => router.push("/(auth)/login")} />
-      <Button title="👤 Continue as Visitor" onPress={() => router.push("/")} />
+      <Button title="🔐 Login" onPress={() => router.push("/login")} />
+      <Button
+        title="👤 Continue as Visitor"
+        onPress={() => router.push("/home")}
+      />
     </View>
   );
 };

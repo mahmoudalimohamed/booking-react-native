@@ -1,21 +1,12 @@
 import { FontAwesome } from "@expo/vector-icons";
+import Ionicons from "@expo/vector-icons/Ionicons";
 import { Tabs } from "expo-router";
-import { useEffect } from "react";
 import useColorScheme from "../../hooks/useColorScheme";
-import ProtectedRoute from "../../hooks/useProtectedRoute";
 export default function TabsLayout() {
   const colorScheme = useColorScheme();
 
-  useEffect(() => {
-    // Force a re-render after initial mount
-    const timeout = setTimeout(() => {
-      // This will trigger a re-render
-    }, 0);
-    return () => clearTimeout(timeout);
-  }, []);
-
   return (
-    <ProtectedRoute>
+    <>
       <Tabs
         screenOptions={{
           headerShown: false,
@@ -39,33 +30,13 @@ export default function TabsLayout() {
           }}
         />
         <Tabs.Screen
-          name="watch"
+          name="stations"
           options={{
-            title: "Watch",
+            title: "stations",
             tabBarIcon: ({ color }) => (
-              <FontAwesome name="play-circle" size={24} color={color} />
+              <Ionicons name="bus" size={24} color={color} />
             ),
-            href: "/watch",
-          }}
-        />
-        <Tabs.Screen
-          name="schedule"
-          options={{
-            title: "Schedule",
-            tabBarIcon: ({ color }) => (
-              <FontAwesome name="calendar" size={24} color={color} />
-            ),
-            href: "/schedule",
-          }}
-        />
-        <Tabs.Screen
-          name="courses"
-          options={{
-            title: "Courses",
-            tabBarIcon: ({ color }) => (
-              <FontAwesome name="book" size={24} color={color} />
-            ),
-            href: "/courses",
+            href: "/stations",
           }}
         />
         <Tabs.Screen
@@ -79,6 +50,6 @@ export default function TabsLayout() {
           }}
         />
       </Tabs>
-    </ProtectedRoute>
+    </>
   );
 }
