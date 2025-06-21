@@ -30,6 +30,16 @@ export default function TabsLayout() {
           }}
         />
         <Tabs.Screen
+          name="search"
+          options={{
+            title: "search",
+            tabBarIcon: ({ color }) => (
+              <FontAwesome name="search" size={24} color={color} />
+            ),
+            href: "/search",
+          }}
+        />
+        <Tabs.Screen
           name="stations"
           options={{
             title: "stations",

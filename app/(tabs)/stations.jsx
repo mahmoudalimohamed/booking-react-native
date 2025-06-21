@@ -16,6 +16,19 @@ import useCityStation from "../../hooks/useCityStation";
 
 const { width } = Dimensions.get("window");
 
+// Reusable styles
+const cardShadowStyle = {
+  shadowColor: "#000",
+  shadowOffset: { width: 0, height: 2 },
+  shadowOpacity: 0.05,
+  shadowRadius: 8,
+  elevation: 3,
+};
+
+// Constants
+const CARD_SPACING = 30;
+const STATION_CARD_WIDTH = (width - 60) / 2 - 8;
+
 const StationSelector = ({
   visible,
   onClose,
@@ -32,7 +45,6 @@ const StationSelector = ({
 
   const handleSelect = (city, station) => {
     const stationObj = { city, station };
-    console.log("Selected Station:", stationObj);
     setSelectedStation(stationObj);
     setTimeout(() => {
       onSelect(stationObj);
@@ -41,16 +53,15 @@ const StationSelector = ({
     }, 200);
   };
 
-  const stationList = Object.entries(groupedData).map(([city, stations]) => ({
-    city,
-    stations,
-  }));
+  const cities = Object.entries(groupedData);
 
   return (
     <Modal visible={visible} animationType="fade" transparent={false}>
       <StatusBar backgroundColor="#f8fafc" barStyle="dark-content" />
       <View className="flex-1 bg-slate-50">
         <View style={{ height: 30 }} />
+
+        {/* Header */}
         <View className="bg-white px-6 pt-16 pb-6 shadow-sm">
           <View className="flex-row items-center justify-between">
             <TouchableOpacity
@@ -69,8 +80,9 @@ const StationSelector = ({
           className="flex-1 px-6 py-4"
           showsVerticalScrollIndicator={false}
         >
-          {stationList.map((item, index) => (
-            <View key={item.city} className="mb-4">
+          {cities.map(([city, stations], index) => (
+            <View key={city} className="mb-4">
+              {/* City Header */}
               <TouchableOpacity
                 className="bg-white rounded-2xl p-5 mb-3 shadow-sm border border-gray-100"
                 onPress={() => toggleCity(index)}
@@ -82,12 +94,12 @@ const StationSelector = ({
                       <Ionicons name="business" size={25} color="#3b82f6" />
                     </View>
                     <Text className="text-lg font-semibold text-gray-900">
-                      {item.city}
+                      {city}
                     </Text>
                   </View>
                   <View className="flex-row items-center">
                     <Text className="text-lg text-gray-500 mr-2">
-                      {item.stations.length} stations
+                      {stations.length} stations
                     </Text>
                     <Ionicons
                       name={
@@ -100,11 +112,12 @@ const StationSelector = ({
                 </View>
               </TouchableOpacity>
 
+              {/* Stations Grid */}
               {expandedCity === index && (
                 <View className="flex-row flex-wrap">
-                  {item.stations.map((station, i) => {
+                  {stations.map((station, i) => {
                     const isSelected =
-                      selectedStation?.city === item.city &&
+                      selectedStation?.city === city &&
                       selectedStation?.station === station;
 
                     return (
@@ -115,8 +128,8 @@ const StationSelector = ({
                             ? "border-blue-500 bg-blue-50"
                             : "border-gray-100"
                         }`}
-                        style={{ width: (width - 60) / 2 - 8 }}
-                        onPress={() => handleSelect(item.city, station)}
+                        style={{ width: STATION_CARD_WIDTH }}
+                        onPress={() => handleSelect(city, station)}
                         activeOpacity={0.8}
                       >
                         <Ionicons
@@ -146,18 +159,12 @@ const StationSelector = ({
   );
 };
 
-const StationCard = ({ title, subtitle, onPress, icon }) => (
+const SelectionCard = ({ title, subtitle, onPress, icon }) => (
   <TouchableOpacity
     onPress={onPress}
     className="bg-white rounded-2xl mx-6 my-2 p-5 border border-gray-100"
     activeOpacity={0.9}
-    style={{
-      shadowColor: "#000",
-      shadowOffset: { width: 0, height: 2 },
-      shadowOpacity: 0.05,
-      shadowRadius: 8,
-      elevation: 3,
-    }}
+    style={cardShadowStyle}
   >
     <View className="flex-row items-center">
       <View className="w-12 h-12 bg-gray-50 rounded-xl items-center justify-center mr-4">
@@ -176,21 +183,27 @@ const StationCard = ({ title, subtitle, onPress, icon }) => (
   </TouchableOpacity>
 );
 
+const LoadingState = ({ message, icon = "train" }) => (
+  <View className="flex-1 bg-white justify-center items-center">
+    <Ionicons name={icon} size={40} color="#6b7280" />
+    <Text className="text-lg text-gray-600 mt-3">{message}</Text>
+  </View>
+);
+
 const StationsScreen = () => {
   const [selectedDate, setSelectedDate] = useState(new Date());
-  const [storedDate, setStoredDate] = useState("");
+  const [storedDate, setStoredDate] = useState(null);
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showStationModal, setShowStationModal] = useState(null);
   const [departure, setDeparture] = useState(null);
   const [arrival, setArrival] = useState(null);
+
   const { groupedData, isLoading, error } = useCityStation();
 
-  const onDateChange = (_, date) => {
-    setShowDatePicker(Platform.OS === "ios");
-    if (date) {
-      setSelectedDate(date);
-      setStoredDate(formatDateForStorage(date));
-    }
+  const handleSearch = () => {
+    console.log(storedDate);
+    console.log(departure);
+    console.log(arrival);
   };
 
   const formatDateForStorage = (date) => {
@@ -201,6 +214,14 @@ const StationsScreen = () => {
     return `${day}/${month}/${year}`;
   };
 
+  const onDateChange = (_, date) => {
+    setShowDatePicker(Platform.OS === "ios");
+    if (date) {
+      setSelectedDate(date);
+      setStoredDate(formatDateForStorage(date)); // Store in dd/mm/yy format
+    }
+  };
+
   const formatDate = (date) =>
     date.toLocaleDateString("en-US", {
       weekday: "long",
@@ -208,23 +229,20 @@ const StationsScreen = () => {
       month: "long",
     });
 
+  const getStationDisplayText = (station) =>
+    station ? `${station.city} - ${station.station}` : "Select Station";
+
+  useState(() => {
+    setStoredDate(formatDateForStorage(new Date()));
+  }, []);
+
   if (isLoading) {
-    return (
-      <View className="flex-1 bg-white justify-center items-center">
-        <Ionicons name="train" size={40} color="#6b7280" />
-        <Text className="text-lg text-gray-600 mt-3">Loading stations...</Text>
-      </View>
-    );
+    return <LoadingState message="Loading stations..." />;
   }
 
   if (error) {
     return (
-      <View className="flex-1 bg-white justify-center items-center">
-        <Ionicons name="alert-circle" size={40} color="#ef4444" />
-        <Text className="text-lg text-red-600 mt-3">
-          Error loading stations
-        </Text>
-      </View>
+      <LoadingState message="Error loading stations" icon="alert-circle" />
     );
   }
 
@@ -239,7 +257,8 @@ const StationsScreen = () => {
           <Text className="text-gray-500">Discover our Royal Lines</Text>
         </View>
 
-        <View className="flex-1 bg-gray-50 ">
+        <View className="flex-1 bg-gray-50">
+          {/* Arabic Title */}
           <View className="bg-white pt-4 pb-4 px-4 items-center">
             <Text className="text-2xl font-bold text-gray-900 text-center mb-2">
               رايح على فين النهاردة؟
@@ -247,62 +266,35 @@ const StationsScreen = () => {
           </View>
 
           <View className="flex-1">
-            <StationCard
+            {/* Departure Station */}
+            <SelectionCard
               subtitle="From"
               title={
-                departure
-                  ? `${departure.city} - ${departure.station}`
-                  : "Select Departure Station"
+                getStationDisplayText(departure) || "Select Departure Station"
               }
               icon="location"
               onPress={() => setShowStationModal("departure")}
             />
 
-            <View style={{ height: 30 }} />
+            <View style={{ height: CARD_SPACING }} />
 
-            <StationCard
+            {/* Arrival Station */}
+            <SelectionCard
               subtitle="To"
-              title={
-                arrival
-                  ? `${arrival.city} - ${arrival.station}`
-                  : "Select Arrival Station"
-              }
+              title={getStationDisplayText(arrival) || "Select Arrival Station"}
               icon="location"
               onPress={() => setShowStationModal("arrival")}
             />
 
-            <View style={{ height: 30 }} />
+            <View style={{ height: CARD_SPACING }} />
 
-            <TouchableOpacity
+            {/* Date Picker */}
+            <SelectionCard
+              subtitle="Travel Date"
+              title={formatDate(selectedDate)}
+              icon="calendar-outline"
               onPress={() => setShowDatePicker(true)}
-              className="bg-white rounded-2xl mx-6 my-2 p-5 border border-gray-100"
-              activeOpacity={0.9}
-              style={{
-                shadowColor: "#000",
-                shadowOffset: { width: 0, height: 2 },
-                shadowOpacity: 0.05,
-                shadowRadius: 8,
-                elevation: 3,
-              }}
-            >
-              <View className="flex-row items-center">
-                <View className="w-12 h-12 bg-gray-50 rounded-xl items-center justify-center mr-4">
-                  <Ionicons name="calendar-outline" size={25} color="#374151" />
-                </View>
-                <View className="flex-1">
-                  <Text className="text-gray-500 text-lg font-medium mb-1">
-                    Travel Date
-                  </Text>
-                  <Text
-                    className="text-gray-900 text-lg font-semibold"
-                    numberOfLines={1}
-                  >
-                    {formatDate(selectedDate)}
-                  </Text>
-                </View>
-                <Ionicons name="chevron-forward" size={25} color="#d1d5db" />
-              </View>
-            </TouchableOpacity>
+            />
 
             {showDatePicker && (
               <DateTimePicker
@@ -314,16 +306,19 @@ const StationsScreen = () => {
               />
             )}
 
-            <View style={{ height: 30 }} />
+            <View style={{ height: CARD_SPACING }} />
 
+            {/* Search Button */}
             <TouchableOpacity
               className="bg-blue-600 rounded-2xl px-6 py-4 mx-4 my-4 items-center justify-center shadow-md"
               activeOpacity={0.9}
+              onPress={handleSearch}
             >
               <Text className="text-white text-lg font-semibold">Search</Text>
             </TouchableOpacity>
           </View>
 
+          {/* Station Modals */}
           <StationSelector
             visible={showStationModal === "departure"}
             onClose={() => setShowStationModal(null)}
