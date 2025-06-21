@@ -20,13 +20,13 @@ export default function TabsLayout() {
         }}
       >
         <Tabs.Screen
-          name="home"
+          name="index"
           options={{
             title: "Home",
             tabBarIcon: ({ color }) => (
               <FontAwesome name="home" size={24} color={color} />
             ),
-            href: "/home",
+            href: "/",
           }}
         />
         <Tabs.Screen
