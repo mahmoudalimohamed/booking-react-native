@@ -12,13 +12,14 @@ import {
   View,
 } from "react-native";
 
-import { useLocations } from "../hooks/useLocations";
-import { useTripSearch } from "../hooks/useTripSearch";
+import { useLocations } from "../../hooks/useLocations";
+import { useTripSearch } from "../../hooks/useTripSearch";
 import styles from "./styleTripSearch";
 
-import LoadingState from "./LoadingState"; // also reusable
-import SelectionCard from "./SelectionCard"; // optional separate file
-import StationSelector from "./StationSelector"; // extract into its own file if preferred
+import LoadingState from "./LoadingState";
+import SelectionCard from "./SelectionCard";
+import StationSelector from "./StationSelector";
+import TripsResultSection from "./TripsResultSection";
 
 const TripSearch = () => {
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -29,6 +30,7 @@ const TripSearch = () => {
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [searchParams, setSearchParams] = useState(null);
   const [searchPerformed, setSearchPerformed] = useState(false);
+  const [showNoTripMessage, setShowNoTripMessage] = useState(false);
 
   // 📍 Fetch locations
   const {
@@ -76,7 +78,6 @@ const TripSearch = () => {
 
     const startArea = findAreaById(departure.areaId);
     const destinationArea = findAreaById(arrival.areaId);
-
     const formattedDate = selectedDate.toISOString().split("T")[0];
 
     const params = {
@@ -112,9 +113,31 @@ const TripSearch = () => {
     type === "departure" ? setDeparture(stationObj) : setArrival(stationObj);
   };
 
+  const formatTime = (timeString) => {
+    if (!timeString) return "N/A";
+    return timeString;
+  };
+
+  const formatPrice = (price) => {
+    if (!price) return "N/A";
+    return `${price} EGP`;
+  };
+
+  const getAvailabilityColor = (seats) => {
+    if (seats > 10) return "#10b981"; // green
+    if (seats > 5) return "#f59e0b"; // yellow
+    return "#ef4444"; // red
+  };
+
   useEffect(() => {
-    setStoredDate(formatDateForStorage(new Date()));
-  }, []);
+    let timout;
+    if (searchPerformed && !isSearching && trips.length === 0) {
+      timout = setTimeout(() => setShowNoTripMessage(true), 800);
+    } else {
+      setShowNoTripMessage(false);
+    }
+    return () => clearTimeout(timout);
+  }, [searchPerformed, isSearching, trips]);
 
   if (isLoadingLocations) {
     return <LoadingState message="Loading stations..." />;
@@ -209,25 +232,13 @@ const TripSearch = () => {
             </View>
           )}
 
-          {/* Trips */}
-          {searchPerformed && (
-            <View style={styles.resultsContainer}>
-              <Text style={styles.resultsTitle}>Available Trips</Text>
-              {trips.length > 0 ? (
-                trips.map((trip) => (
-                  <View key={trip.id} style={styles.tripCard}>
-                    {/* Same card rendering as before... */}
-                    <Text>
-                      {trip.start_location} → {trip.destination}
-                    </Text>
-                    <Text>{trip.departure_date}</Text>
-                  </View>
-                ))
-              ) : (
-                <Text style={styles.noResultsTitle}>No trips found</Text>
-              )}
-            </View>
-          )}
+          {/* Enhanced Trips Section */}
+          <TripsResultSection
+            trips={trips}
+            showNoTripMessage={showNoTripMessage}
+            searchPerformed={searchPerformed}
+            formatPrice={formatPrice}
+          />
 
           <StationSelector
             visible={showStationModal === "departure"}

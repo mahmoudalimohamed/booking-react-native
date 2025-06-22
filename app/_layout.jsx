@@ -3,6 +3,7 @@ import {
   DefaultTheme,
   ThemeProvider,
 } from "@react-navigation/native";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
@@ -13,6 +14,7 @@ import { CityStationProvider } from "../contexts/CityStationContext";
 import { UserProvider } from "../contexts/UserContext";
 import "../global.css";
 import useColorScheme from "../hooks/useColorScheme";
+const queryClient = new QueryClient();
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
@@ -25,30 +27,38 @@ export default function RootLayout() {
   }
 
   return (
-    <CityStationProvider>
-      <UserProvider>
-        <SafeAreaProvider>
-          <ThemeProvider
-            value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
-          >
-            <View
-              style={{
-                flex: 1,
-                paddingTop:
-                  Platform.OS === "android" ? RNStatusBar.currentHeight : 0,
-                backgroundColor: colorScheme === "dark" ? "#000" : "#fff",
-              }}
+    <QueryClientProvider client={queryClient}>
+      <CityStationProvider>
+        <UserProvider>
+          <SafeAreaProvider>
+            <ThemeProvider
+              value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
             >
-              <Stack>
-                <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-                <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-                <Stack.Screen name="+not-found" />
-              </Stack>
-              <StatusBar style={colorScheme === "dark" ? "light" : "dark"} />
-            </View>
-          </ThemeProvider>
-        </SafeAreaProvider>
-      </UserProvider>
-    </CityStationProvider>
+              <View
+                style={{
+                  flex: 1,
+                  paddingTop:
+                    Platform.OS === "android" ? RNStatusBar.currentHeight : 0,
+                  backgroundColor: colorScheme === "dark" ? "#000" : "#fff",
+                }}
+              >
+                <Stack>
+                  <Stack.Screen
+                    name="(tabs)"
+                    options={{ headerShown: false }}
+                  />
+                  <Stack.Screen
+                    name="(auth)"
+                    options={{ headerShown: false }}
+                  />
+                  <Stack.Screen name="+not-found" />
+                </Stack>
+                <StatusBar style={colorScheme === "dark" ? "light" : "dark"} />
+              </View>
+            </ThemeProvider>
+          </SafeAreaProvider>
+        </UserProvider>
+      </CityStationProvider>
+    </QueryClientProvider>
   );
 }
