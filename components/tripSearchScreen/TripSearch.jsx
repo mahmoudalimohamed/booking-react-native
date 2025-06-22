@@ -1,3 +1,5 @@
+"use client";
+
 import { Ionicons } from "@expo/vector-icons";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { useEffect, useMemo, useState } from "react";
@@ -113,20 +115,9 @@ const TripSearch = () => {
     type === "departure" ? setDeparture(stationObj) : setArrival(stationObj);
   };
 
-  const formatTime = (timeString) => {
-    if (!timeString) return "N/A";
-    return timeString;
-  };
-
   const formatPrice = (price) => {
     if (!price) return "N/A";
     return `${price} EGP`;
-  };
-
-  const getAvailabilityColor = (seats) => {
-    if (seats > 10) return "#10b981"; // green
-    if (seats > 5) return "#f59e0b"; // yellow
-    return "#ef4444"; // red
   };
 
   useEffect(() => {
@@ -155,16 +146,14 @@ const TripSearch = () => {
         style={styles.scrollView}
         showsVerticalScrollIndicator={false}
       >
-        <View style={styles.header}>
-          <Text style={styles.headerTitle}>Trip Search</Text>
-          <Text style={styles.headerSubtitle}>Find your perfect journey</Text>
-        </View>
-
         <View style={styles.content}>
-          <View style={styles.arabicTitleContainer}>
-            <Text style={styles.arabicTitle}>رايح على فين النهاردة؟</Text>
+          {/* Header */}
+          <View style={styles.header}>
+            <Text style={styles.headerTitle}>Trip Search</Text>
+            <Text style={styles.headerSubtitle}>Find your perfect journey</Text>
           </View>
 
+          {/* Form Container */}
           <View style={styles.formContainer}>
             <SelectionCard
               subtitle="From"
@@ -201,9 +190,10 @@ const TripSearch = () => {
               />
             )}
 
+            {/* Enhanced Search Button */}
             <TouchableOpacity
               style={styles.searchButton}
-              activeOpacity={0.9}
+              activeOpacity={0.8}
               onPress={handleSearch}
               disabled={isSearching}
             >
@@ -217,13 +207,13 @@ const TripSearch = () => {
                     color="white"
                     style={{ marginRight: 8 }}
                   />
-                  <Text style={styles.searchButtonText}>Search</Text>
+                  <Text style={styles.searchButtonText}>Search Trips</Text>
                 </>
               )}
             </TouchableOpacity>
           </View>
 
-          {/* Error */}
+          {/* Enhanced Error Display */}
           {searchError && searchPerformed && (
             <View style={styles.errorContainer}>
               <Text style={styles.errorText}>
@@ -240,6 +230,7 @@ const TripSearch = () => {
             formatPrice={formatPrice}
           />
 
+          {/* Enhanced Station Selectors */}
           <StationSelector
             visible={showStationModal === "departure"}
             onClose={() => setShowStationModal(null)}

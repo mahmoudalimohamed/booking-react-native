@@ -1,33 +1,25 @@
 import { StyleSheet } from "react-native";
 
 const styles = StyleSheet.create({
-  // Modern Styles matching the card design pattern - Add to styleTripSearch.js
-
-  // Main Container (px-6 py-4)
   cardContainer: {
-    paddingHorizontal: 24,
+    paddingHorizontal: 20,
     paddingVertical: 16,
   },
 
-  // Header Section (flex-row items-center justify-between mb-4)
+  // Header Section
   cardHeader: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    marginBottom: 16,
+    marginBottom: 20,
   },
 
-  // Title (text-xl font-bold text-gray-800)
+  // Title
   cardTitle: {
-    fontSize: 20,
-    fontWeight: "bold",
-    color: "#1f2937",
-  },
-
-  // See All Text (text-purple-600 font-medium)
-  seeAllText: {
-    color: "#7c3aed",
-    fontWeight: "500",
+    fontSize: 24,
+    fontWeight: "700",
+    color: "#1a1a1a",
+    letterSpacing: -0.5,
   },
 
   // Trips List Container
@@ -35,209 +27,224 @@ const styles = StyleSheet.create({
     gap: 16,
   },
 
-  // Featured Trip Card (bg-purple-600 rounded-3xl p-6 shadow-lg)
+  // Featured Trip Card - Modern card design
   featuredTripCard: {
-    backgroundColor: "green",
-    borderRadius: 24,
-    padding: 24,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.15,
-    shadowRadius: 12,
-    elevation: 8,
-  },
-
-  // Trip Card Header (flex-row items-center justify-between mb-4)
-  tripCardHeader: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    marginBottom: 16,
-  },
-
-  // Status Badge (bg-purple-400 px-3 py-1 rounded-full)
-  statusBadge: {
-    backgroundColor: "rgba(139, 92, 246, 0.8)",
-    paddingHorizontal: 12,
-    paddingVertical: 4,
+    backgroundColor: "#ffffff",
     borderRadius: 20,
+    padding: 0,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.12,
+    shadowRadius: 24,
+    elevation: 8,
+    borderWidth: 1,
+    borderColor: "#f0f0f0",
+    overflow: "hidden",
   },
 
-  // Status Badge Text (text-white text-xs font-bold)
-  statusBadgeText: {
-    color: "white",
-    fontSize: 12,
-    fontWeight: "bold",
+  // Gradient header section
+  tripCardHeader: {
+    backgroundColor: "#4f46e5",
+    paddingHorizontal: 20,
+    paddingVertical: 20,
+    position: "relative",
   },
 
-  // Action Button (w-12 h-12 bg-white/20 rounded-full items-center justify-center)
-  actionButton: {
-    width: 48,
-    height: 48,
+  // Route container
+  routeContainer: {
+    marginBottom: 16,
+  },
+
+  // Route text styling
+  routeFromText: {
+    fontSize: 18,
+    fontWeight: "600",
+    color: "#ffffff",
+    marginBottom: 4,
+  },
+
+  routeToText: {
+    fontSize: 18,
+    fontWeight: "600",
+    color: "#ffffff",
+    opacity: 0.9,
+  },
+
+  // Route separator
+  routeArrow: {
+    alignSelf: "flex-start",
+    marginVertical: 8,
+  },
+
+  // Status Badge
+  statusBadge: {
     backgroundColor: "rgba(255, 255, 255, 0.2)",
-    borderRadius: 24,
-    alignItems: "center",
-    justifyContent: "center",
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 16,
+    alignSelf: "flex-start",
   },
 
-  // Trip Route (text-2xl font-bold text-white mb-2)
-  tripRoute: {
-    fontSize: 24,
-    fontWeight: "bold",
-    color: "white",
-    marginBottom: 8,
+  statusBadgeText: {
+    color: "#ffffff",
+    fontSize: 12,
+    fontWeight: "600",
+    textTransform: "uppercase",
+    letterSpacing: 0.5,
   },
 
-  // Trip Subtitle (text-purple-100 mb-4)
-  tripSubtitle: {
-    color: "#e9d5ff",
-    marginBottom: 16,
-    fontSize: 14,
+  // Card content section
+  cardContent: {
+    padding: 20,
   },
 
-  // Trip Details Row (flex-row items-center justify-between)
-  tripDetailsRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    marginBottom: 16,
-  },
-
-  // Detail Item (flex-row items-center)
+  // Detail Item
   detailItem: {
     flexDirection: "row",
     alignItems: "center",
+    marginBottom: 16,
+    backgroundColor: "#f8fafc",
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    borderRadius: 12,
   },
 
-  // Detail Icon (w-8 h-8 bg-white/20 rounded-full items-center justify-center mr-2)
-  detailIcon: {
-    width: 32,
-    height: 32,
-    backgroundColor: "rgba(255, 255, 255, 0.2)",
-    borderRadius: 16,
-    alignItems: "center",
-    justifyContent: "center",
-    marginRight: 8,
-  },
-
-  // Detail Text (text-white font-medium)
+  // Detail Text
   detailText: {
-    color: "white",
+    color: "#374151",
     fontWeight: "500",
-    marginLeft: 4,
-  },
-
-  // Trip Footer Row (flex-row items-center mt-4 space-x-4)
-  tripFooterRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    marginTop: 16,
+    fontSize: 15,
+    marginLeft: 12,
+    flex: 1,
   },
 
   // Trip Metrics Container
   tripMetrics: {
     flexDirection: "row",
     alignItems: "center",
-    flex: 1,
-    gap: 16,
+    backgroundColor: "#ecfdf5",
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    borderRadius: 12,
+    marginBottom: 20,
   },
 
-  // Metric Item (flex-row items-center)
-  metricItem: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-
-  // Metric Text (text-white text-sm ml-1)
+  // Metric Text
   metricText: {
-    color: "white",
-    fontSize: 14,
-    marginLeft: 4,
+    color: "#059669",
+    fontSize: 15,
+    fontWeight: "600",
+    marginLeft: 12,
   },
 
   // Price Action Container
   priceActionContainer: {
-    alignItems: "flex-end",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingTop: 16,
+    borderTopWidth: 1,
+    borderTopColor: "#f1f5f9",
   },
 
   // Trip Price
+  priceContainer: {
+    flex: 1,
+  },
+
+  priceLabel: {
+    fontSize: 12,
+    color: "#6b7280",
+    fontWeight: "500",
+    marginBottom: 4,
+  },
+
   tripPrice: {
-    color: "white",
-    fontSize: 18,
-    fontWeight: "bold",
-    marginBottom: 8,
+    color: "#1a1a1a",
+    fontSize: 24,
+    fontWeight: "700",
+    letterSpacing: -0.5,
   },
 
-  // Continue Button (bg-white px-4 py-2 rounded-full ml-auto)
+  // Continue Button - Modern gradient button
   continueButton: {
-    backgroundColor: "white",
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 20,
+    backgroundColor: "#10b981",
+    paddingHorizontal: 24,
+    paddingVertical: 14,
+    borderRadius: 16,
+    shadowColor: "#10b981",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 6,
+    minWidth: 120,
   },
 
-  // Continue Button Text (text-purple-600 font-semibold text-sm)
   continueButtonText: {
-    color: "#7c3aed",
-    fontWeight: "600",
-    fontSize: 14,
+    color: "#ffffff",
+    fontWeight: "700",
+    fontSize: 16,
+    textAlign: "center",
+    letterSpacing: 0.5,
   },
 
-  // No Trips Card - Similar gradient style
+  // No Trips Card
   noTripsCard: {
-    backgroundColor: "#6b7280",
-    borderRadius: 24,
-    padding: 32,
+    backgroundColor: "#ffffff",
+    borderRadius: 20,
+    padding: 40,
     alignItems: "center",
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.15,
-    shadowRadius: 12,
-    elevation: 8,
+    shadowOpacity: 0.08,
+    shadowRadius: 16,
+    elevation: 4,
+    borderWidth: 1,
+    borderColor: "#f0f0f0",
   },
 
-  // No Trips Icon
   noTripsIcon: {
-    width: 64,
-    height: 64,
-    backgroundColor: "rgba(255, 255, 255, 0.2)",
-    borderRadius: 32,
+    width: 80,
+    height: 80,
+    backgroundColor: "#f3f4f6",
+    borderRadius: 40,
     alignItems: "center",
     justifyContent: "center",
-    marginBottom: 16,
+    marginBottom: 20,
   },
 
-  // No Trips Title
   noTripsTitle: {
     fontSize: 20,
-    fontWeight: "bold",
-    color: "white",
+    fontWeight: "700",
+    color: "#1a1a1a",
     marginBottom: 8,
     textAlign: "center",
   },
 
-  // No Trips Subtitle
   noTripsSubtitle: {
-    color: "rgba(255, 255, 255, 0.8)",
-    textAlign: "center",
-    marginBottom: 20,
-    fontSize: 14,
-  },
-
-  // Retry Button
-  retryButton: {
-    backgroundColor: "white",
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-    borderRadius: 20,
-  },
-
-  // Retry Button Text
-  retryButtonText: {
     color: "#6b7280",
+    textAlign: "center",
+    marginBottom: 24,
+    fontSize: 15,
+    lineHeight: 22,
+  },
+
+  retryButton: {
+    backgroundColor: "#4f46e5",
+    paddingHorizontal: 24,
+    paddingVertical: 12,
+    borderRadius: 12,
+    shadowColor: "#4f46e5",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+
+  retryButtonText: {
+    color: "#ffffff",
     fontWeight: "600",
-    fontSize: 14,
+    fontSize: 15,
   },
 });
 
