@@ -51,26 +51,24 @@ const Login = () => {
 
   const onSubmit = async ({ email, password }) => {
     setIsSubmitting(true);
-    console.log("Logging in:", { email, password });
     try {
       const response = await LoginApi(email, password);
-      console.log("Login success:", response.data);
       setMessage("Login Successful.");
-      setTimeout(() => router.replace("/"), 1000);
+      setTimeout(() => {
+        router.replace("/");
+      }, 1000);
     } catch (error) {
-      console.error(
-        "Login failed:",
-        error.response?.data,
-        error.response?.status
-      );
       if (error.response?.data) {
-        Object.entries(error.response.data).forEach(([field, msgs]) => {
-          setError(field, { type: "server", message: msgs[0] });
+        Object.keys(error.response.data).forEach((field) => {
+          setError(field, {
+            type: "server",
+            message: error.response.data[field][0],
+          });
         });
         setMessage("Login Failed.");
       } else {
-        setMessage("Error: Something went wrong.");
-        alert("Unexpected error, check the console");
+        setMessage("Error: Something Went Wrong.");
+        alert("Something went wrong.");
       }
     } finally {
       setIsSubmitting(false);

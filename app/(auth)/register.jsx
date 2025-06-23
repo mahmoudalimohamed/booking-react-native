@@ -1,112 +1,395 @@
-import { Link, router } from "expo-router";
-import { useState } from "react";
-import { Text, TextInput, TouchableOpacity, View } from "react-native";
-import { useUser } from "../../hooks/useUser";
+import { router } from "expo-router";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import {
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { RegisterApi } from "../../api/auth";
 
-export default function Register() {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
+const Register = () => {
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    setError,
+    watch,
+    formState: { errors },
+  } = useForm({
+    defaultValues: {
+      name: "",
+      email: "",
+      phone_number: "",
+      password: "",
+    },
+  });
 
-  const { register } = useUser();
+  const [message, setMessage] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
-  const isFormValid =
-    name.trim() && email.trim() && password.trim() && password.length >= 8;
+  const name = watch("name");
+  const email = watch("email");
+  const password = watch("password");
+  const phoneNumber = watch("phone_number");
 
-  const handleSubmit = async () => {
-    setError(null);
-    if (!isFormValid) {
-      setError(
-        "Please fill in all fields and use a password with at least 8 characters."
-      );
-      return;
-    }
-    setIsLoading(true);
+  // Setup TextInput refs
+  useEffect(() => {
+    register("name", { required: "Name Is Required" });
+    register("email", {
+      required: "Email Is Required",
+      pattern: {
+        value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+        message: "Invalid Email Address",
+      },
+    });
+    register("phone_number", {
+      required: "Phone Number Is Required",
+      pattern: {
+        value: /^\d{11}$/,
+        message: "Phone Number Must Be Exactly 11 Digits",
+      },
+    });
+    register("password", {
+      required: "Password Is Required",
+      minLength: {
+        value: 8,
+        message: "Password Must Be At Least 8 Characters",
+      },
+    });
+  }, [register]);
+
+  const onSubmit = async (data) => {
+    setIsSubmitting(true);
     try {
-      await register(email, password, name);
-      router.replace("/(tabs)");
+      const response = await RegisterApi(data);
+      setMessage("Registration Successful.");
+      router.replace("/");
     } catch (error) {
-      setError(error.message || "Registration failed. Please try again.");
-      setIsLoading(false);
+      if (error.response?.data) {
+        Object.keys(error.response.data).forEach((field) => {
+          setError(field, {
+            type: "server",
+            message: error.response.data[field][0],
+          });
+        });
+        setMessage("Registration Failed.");
+      } else {
+        setMessage("Error: Something Went Wrong.");
+        alert("Something went wrong.");
+      }
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   return (
-    <View className="flex-1 bg-gray-50">
-      <View className="px-6 py-8 bg-white mx-4 mt-20 rounded-lg shadow-sm">
-        <Text className="text-2xl font-bold text-gray-800 mb-6 text-center">
-          Register
-        </Text>
-
-        {/* Name Input */}
-        <View className="mb-4">
-          <Text className="text-gray-700 font-medium mb-2">Name</Text>
-          <TextInput
-            className="border border-gray-300 rounded-lg px-4 py-3 text-gray-800 bg-white"
-            placeholder="Enter your Name"
-            value={name}
-            onChangeText={setName}
-            autoCorrect={false}
-          />
-        </View>
-
-        {/* Email Input */}
-        <View className="mb-4">
-          <Text className="text-gray-700 font-medium mb-2">Email</Text>
-          <TextInput
-            className="border border-gray-300 rounded-lg px-4 py-3 text-gray-800 bg-white"
-            placeholder="Enter your email"
-            value={email}
-            onChangeText={setEmail}
-            keyboardType="email-address"
-            autoCapitalize="none"
-            autoCorrect={false}
-          />
-        </View>
-
-        {/* Password Input */}
-        <View className="mb-6">
-          <Text className="text-gray-700 font-medium mb-2">Password</Text>
-          <TextInput
-            className="border border-gray-300 rounded-lg px-4 py-3 text-gray-800 bg-white"
-            placeholder="Enter your password (min 8 characters)"
-            value={password}
-            onChangeText={setPassword}
-            secureTextEntry={true}
-          />
-        </View>
-
-        {/* Error Message */}
-        {error && (
-          <View className="mb-4 bg-red-100 border-red-400 p-3 rounded-md">
-            <Text className="text-red-700 text-sm">{error}</Text>
+    <KeyboardAvoidingView
+      style={styles.keyboardContainer}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    >
+      <ScrollView
+        style={styles.scrollContainer}
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+      >
+        <View style={styles.container}>
+          {/* Header */}
+          <View style={styles.header}>
+            <Text style={styles.title}>Create Account</Text>
           </View>
-        )}
 
-        {/* Submit Button */}
-        <TouchableOpacity
-          className={`rounded-lg py-3 mb-4 ${
-            isFormValid && !isLoading ? "bg-green-600" : "bg-green-300"
-          }`}
-          onPress={handleSubmit}
-        >
-          <Text className="text-white font-semibold text-center text-lg">
-            {isLoading ? "Registering..." : "Register"}
-          </Text>
-        </TouchableOpacity>
+          {/* Form Fields */}
+          <View style={styles.formContainer}>
+            {/* Name Field */}
+            <View style={styles.inputContainer}>
+              <Text style={styles.label}>Full Name</Text>
+              <TextInput
+                placeholder="Enter your full name"
+                value={name}
+                editable={!isSubmitting}
+                style={[
+                  styles.input,
+                  errors.name && styles.inputError,
+                  isSubmitting && styles.disabledInput,
+                ]}
+                onChangeText={(text) => setValue("name", text)}
+                placeholderTextColor="#9CA3AF"
+              />
+              {errors.name && (
+                <Text style={styles.error}>{errors.name.message}</Text>
+              )}
+            </View>
 
-        {/* Login Link */}
-        <View className="flex-row justify-center">
-          <Text className="text-gray-600">Already have an account? </Text>
-          <Link href="/login" asChild>
-            <TouchableOpacity>
-              <Text className="text-green-600 font-medium">Login here</Text>
+            {/* Email Field */}
+            <View style={styles.inputContainer}>
+              <Text style={styles.label}>Email Address</Text>
+              <TextInput
+                placeholder="Enter your email"
+                keyboardType="email-address"
+                autoCapitalize="none"
+                value={email}
+                editable={!isSubmitting}
+                style={[
+                  styles.input,
+                  errors.email && styles.inputError,
+                  isSubmitting && styles.disabledInput,
+                ]}
+                onChangeText={(text) => setValue("email", text)}
+                placeholderTextColor="#9CA3AF"
+              />
+              {errors.email && (
+                <Text style={styles.error}>{errors.email.message}</Text>
+              )}
+            </View>
+
+            {/* Phone Field */}
+            <View style={styles.inputContainer}>
+              <Text style={styles.label}>Phone Number</Text>
+              <TextInput
+                placeholder="Enter your phone number"
+                keyboardType="number-pad"
+                style={[
+                  styles.input,
+                  errors.phone_number && styles.inputError,
+                  isSubmitting && styles.disabledInput,
+                ]}
+                maxLength={11}
+                value={phoneNumber}
+                editable={!isSubmitting}
+                onChangeText={(text) => {
+                  const sanitized = text.replace(/[^0-9]/g, "");
+                  setValue("phone_number", sanitized);
+                }}
+                placeholderTextColor="#9CA3AF"
+              />
+              {errors.phone_number && (
+                <Text style={styles.error}>{errors.phone_number.message}</Text>
+              )}
+            </View>
+
+            {/* Password Field */}
+            <View style={styles.inputContainer}>
+              <Text style={styles.label}>Password</Text>
+              <View
+                style={[
+                  styles.passwordContainer,
+                  errors.password && styles.inputError,
+                  isSubmitting && styles.disabledInput,
+                ]}
+              >
+                <TextInput
+                  placeholder="Enter your password"
+                  secureTextEntry={!showPassword}
+                  value={password}
+                  editable={!isSubmitting}
+                  style={styles.passwordInput}
+                  onChangeText={(text) => setValue("password", text)}
+                  placeholderTextColor="#9CA3AF"
+                />
+                <TouchableOpacity
+                  onPress={() => setShowPassword((prev) => !prev)}
+                  style={styles.toggleButton}
+                  disabled={isSubmitting}
+                >
+                  <Text style={styles.toggleText}>
+                    {showPassword ? "Hide" : "Show"}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+              {errors.password && (
+                <Text style={styles.error}>{errors.password.message}</Text>
+              )}
+            </View>
+
+            {/* Submit Button */}
+            <TouchableOpacity
+              style={[styles.button, isSubmitting && styles.disabledButton]}
+              onPress={handleSubmit(onSubmit)}
+              disabled={isSubmitting}
+              activeOpacity={0.8}
+            >
+              <Text style={styles.buttonText}>
+                {isSubmitting ? "Creating Account..." : "Create Account"}
+              </Text>
             </TouchableOpacity>
-          </Link>
+
+            {/* Message */}
+            {message ? (
+              <View style={styles.messageContainer}>
+                <Text
+                  style={[
+                    styles.message,
+                    message.includes("Successful")
+                      ? styles.successMessage
+                      : styles.errorMessage,
+                  ]}
+                >
+                  {message}
+                </Text>
+              </View>
+            ) : null}
+          </View>
         </View>
-      </View>
-    </View>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
-}
+};
+
+export default Register;
+
+const styles = StyleSheet.create({
+  keyboardContainer: {
+    flex: 1,
+    backgroundColor: "white",
+  },
+  scrollContainer: {
+    flex: 1,
+  },
+  scrollContent: {
+    flexGrow: 1,
+  },
+  container: {
+    flex: 1,
+    paddingHorizontal: 24,
+    paddingTop: 25,
+    paddingBottom: 20,
+  },
+  header: {
+    marginBottom: 10,
+    alignItems: "center",
+  },
+  title: {
+    fontSize: 30,
+    fontWeight: "semibold",
+    color: "#111827",
+    marginBottom: 8,
+    textAlign: "center",
+  },
+
+  formContainer: {
+    flex: 1,
+  },
+  inputContainer: {
+    marginBottom: 24,
+  },
+  label: {
+    fontSize: 16,
+    fontWeight: "semibold",
+    color: "#374151",
+    marginBottom: 8,
+  },
+  input: {
+    borderWidth: 2,
+    borderColor: "black",
+    padding: 12,
+    borderRadius: 12,
+    fontSize: 16,
+    backgroundColor: "#FFFFFF",
+    color: "#111827",
+    shadowColor: "blue",
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.05,
+    shadowRadius: 2,
+    elevation: 1,
+  },
+  inputError: {
+    borderColor: "black",
+    backgroundColor: "#FEF2F2",
+  },
+  disabledInput: {
+    backgroundColor: "#F3F4F6",
+    color: "#9CA3AF",
+    opacity: 0.7,
+  },
+  error: {
+    color: "#EF4444",
+    marginTop: 6,
+    fontSize: 14,
+    fontWeight: "500",
+  },
+  passwordContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    borderWidth: 2,
+    borderColor: "black",
+    borderRadius: 12,
+    backgroundColor: "#FFFFFF",
+    paddingRight: 16,
+    shadowColor: "blue",
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.05,
+    shadowRadius: 2,
+    elevation: 1,
+  },
+  passwordInput: {
+    flex: 1,
+    padding: 16,
+    fontSize: 16,
+    color: "#111827",
+  },
+  toggleButton: {
+    paddingVertical: 8,
+    paddingHorizontal: 4,
+  },
+  toggleText: {
+    color: "#3B82F6",
+    fontSize: 14,
+    fontWeight: "600",
+  },
+  button: {
+    backgroundColor: "#10b981",
+    padding: 18,
+    borderRadius: 12,
+    alignItems: "center",
+    marginTop: 8,
+    shadowColor: "#3B82F6",
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  disabledButton: {
+    backgroundColor: "#9CA3AF",
+    shadowOpacity: 0.1,
+  },
+  buttonText: {
+    color: "#FFFFFF",
+    fontSize: 18,
+    fontWeight: "700",
+  },
+  messageContainer: {
+    marginTop: 20,
+    padding: 16,
+    borderRadius: 12,
+    alignItems: "center",
+  },
+  message: {
+    fontSize: 16,
+    fontWeight: "600",
+    textAlign: "center",
+  },
+  successMessage: {
+    color: "#059669",
+    backgroundColor: "#ECFDF5",
+  },
+  errorMessage: {
+    color: "#DC2626",
+    backgroundColor: "#FEF2F2",
+  },
+});
