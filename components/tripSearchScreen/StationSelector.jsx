@@ -4,11 +4,11 @@ import {
   Modal,
   ScrollView,
   StatusBar,
+  StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from "react-native";
-import styles from "./styleTripSearch";
 const StationSelector = ({
   visible,
   onClose,
@@ -120,3 +120,131 @@ const StationSelector = ({
 };
 
 export default StationSelector;
+
+const cardShadowStyle = {
+  shadowColor: "blue",
+  shadowOffset: { width: 0, height: 8 },
+  shadowOpacity: 0.12,
+  shadowRadius: 24,
+  elevation: 8,
+};
+
+const styles = StyleSheet.create({
+  modalContainer: {
+    flex: 1,
+    backgroundColor: "white",
+  },
+  modalHeader: {
+    backgroundColor: "white",
+
+    paddingHorizontal: 24,
+    paddingTop: 60,
+    paddingBottom: 24,
+    borderBottomLeftRadius: 24,
+    borderBottomRightRadius: 24,
+    ...cardShadowStyle,
+  },
+  modalHeaderContent: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  closeButton: {
+    width: 44,
+    height: 44,
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 22,
+    backgroundColor: "#f1f5f9",
+  },
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: "700",
+    color: "#1e293b",
+    flex: 1,
+    textAlign: "center",
+    marginLeft: 5,
+  },
+  modalScrollView: {
+    flex: 1,
+    paddingHorizontal: 20,
+    paddingVertical: 20,
+  },
+  cityContainer: {
+    marginBottom: 24,
+  },
+  cityHeader: {
+    backgroundColor: "#ffffff",
+    borderRadius: 20,
+    padding: 20,
+    marginBottom: 16,
+    borderWidth: 0,
+    ...cardShadowStyle,
+  },
+  cityHeaderContent: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  cityInfo: {
+    flexDirection: "row",
+    alignItems: "center",
+    flex: 1,
+  },
+  cityIcon: {
+    width: 48,
+    height: 48,
+    backgroundColor: "white",
+    borderRadius: 16,
+    alignItems: "center",
+    justifyContent: "center",
+    marginRight: 5,
+  },
+  cityName: {
+    fontSize: 20,
+    fontWeight: "700",
+    color: "#1e293b",
+    flex: 1,
+  },
+  cityMeta: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  stationCount: {
+    fontSize: 14,
+    color: "#64748b",
+    fontWeight: "600",
+    backgroundColor: "#f1f5f9",
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 12,
+  },
+  stationsGrid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 2,
+  },
+  stationCard: {
+    backgroundColor: "white",
+    borderRadius: 16,
+    padding: 16,
+    minWidth: "45%",
+    borderWidth: 2,
+    borderColor: "#f1f5f9",
+    ...cardShadowStyle,
+  },
+  selectedStationCard: {
+    borderColor: "#10b981",
+    backgroundColor: "#ecfdf5",
+  },
+  stationName: {
+    fontWeight: "600",
+    color: "#374151",
+    fontSize: 15,
+    textAlign: "center",
+  },
+  selectedStationName: {
+    color: "#059669",
+    fontWeight: "700",
+  },
+});

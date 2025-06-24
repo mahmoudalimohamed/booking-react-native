@@ -7,6 +7,7 @@ import {
   Platform,
   SafeAreaView,
   ScrollView,
+  StyleSheet,
   Text,
   TouchableOpacity,
   View,
@@ -14,7 +15,6 @@ import {
 
 import { useLocations } from "../../hooks/useLocations";
 import { useTripSearch } from "../../hooks/useTripSearch";
-import styles from "./styleTripSearch";
 
 import LoadingState from "./LoadingState";
 import SelectionCard from "./SelectionCard";
@@ -255,3 +255,84 @@ const TripSearch = () => {
 };
 
 export default TripSearch;
+
+const cardShadowStyle = {
+  shadowColor: "blue",
+  shadowOffset: { width: 0, height: 8 },
+  shadowOpacity: 0.12,
+  shadowRadius: 24,
+  elevation: 8,
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#f8fafc",
+  },
+  scrollView: {
+    flex: 1,
+  },
+  header: {
+    backgroundColor: "white",
+    paddingHorizontal: 24,
+    paddingTop: 60,
+    paddingBottom: 34,
+    borderBottomLeftRadius: 24,
+    borderBottomRightRadius: 24,
+  },
+  headerTitle: {
+    fontSize: 32,
+    fontWeight: "800",
+    color: "black",
+    marginBottom: 8,
+    letterSpacing: -0.5,
+  },
+  headerSubtitle: {
+    fontSize: 16,
+    color: "black",
+    fontWeight: "500",
+  },
+  content: {
+    flex: 1,
+    backgroundColor: "white",
+    marginTop: -16,
+  },
+  formContainer: {
+    flex: 1,
+    paddingHorizontal: 20,
+    paddingBottom: 20,
+    paddingTop: 20,
+  },
+
+  searchButton: {
+    backgroundColor: "#10b981",
+    borderRadius: 20,
+    paddingVertical: 18,
+    paddingHorizontal: 24,
+    alignItems: "center",
+    justifyContent: "center",
+    flexDirection: "row",
+    marginTop: 8,
+  },
+  searchButtonText: {
+    color: "#ffffff",
+    fontSize: 18,
+    fontWeight: "700",
+    letterSpacing: 0.5,
+  },
+  errorContainer: {
+    backgroundColor: "#fef2f2",
+    borderLeftWidth: 4,
+    borderLeftColor: "#ef4444",
+    padding: 20,
+    marginHorizontal: 20,
+    marginTop: 20,
+    borderRadius: 16,
+    ...cardShadowStyle,
+  },
+  errorText: {
+    color: "#dc2626",
+    fontSize: 15,
+    fontWeight: "600",
+  },
+});

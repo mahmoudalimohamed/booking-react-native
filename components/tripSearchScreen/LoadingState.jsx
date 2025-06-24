@@ -1,6 +1,5 @@
 import { Ionicons } from "@expo/vector-icons";
-import { Text, View } from "react-native";
-import styles from "./styleTripSearch";
+import { StyleSheet, Text, View } from "react-native";
 
 const LoadingState = ({ message, icon = "train" }) => (
   <View style={styles.loadingContainer}>
@@ -10,3 +9,20 @@ const LoadingState = ({ message, icon = "train" }) => (
 );
 
 export default LoadingState;
+
+const styles = StyleSheet.create({
+  loadingContainer: {
+    marginTop: 40,
+    flex: 1,
+    backgroundColor: "white",
+
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  loadingText: {
+    fontSize: 18,
+    color: "#64748b",
+    marginTop: 12,
+    fontWeight: "500",
+  },
+});

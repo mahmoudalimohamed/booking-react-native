@@ -1,11 +1,10 @@
 import { Ionicons } from "@expo/vector-icons";
-import { Text, TouchableOpacity, View } from "react-native";
-import styles from "./styleTripSearch";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 const SelectionCard = ({ title, subtitle, onPress, icon }) => (
   <TouchableOpacity
     onPress={onPress}
-    style={[styles.selectionCard, styles.cardShadowStyle]}
+    style={[styles.selectionCard]}
     activeOpacity={0.9}
   >
     <View style={styles.selectionCardContent}>
@@ -24,3 +23,52 @@ const SelectionCard = ({ title, subtitle, onPress, icon }) => (
 );
 
 export default SelectionCard;
+
+const cardShadowStyle = {
+  shadowColor: "blue",
+  shadowOffset: { width: 0, height: 8 },
+  shadowOpacity: 0.12,
+  shadowRadius: 24,
+  elevation: 8,
+};
+const styles = StyleSheet.create({
+  selectionCard: {
+    backgroundColor: "white",
+    borderRadius: 20,
+    padding: 20,
+    marginBottom: 10,
+    borderWidth: 1,
+    ...cardShadowStyle,
+  },
+  selectionCardContent: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  selectionIcon: {
+    width: 56,
+    height: 56,
+    backgroundColor: "white",
+    borderRadius: 16,
+    alignItems: "center",
+    justifyContent: "center",
+    marginRight: 10,
+  },
+  selectionText: {
+    flex: 1,
+  },
+
+  selectionTitle: {
+    color: "#1e293b",
+    fontSize: 18,
+    fontWeight: "600",
+    lineHeight: 24,
+  },
+  selectionSubtitle: {
+    color: "#64748b",
+    fontSize: 14,
+    fontWeight: "600",
+    marginBottom: 6,
+    textTransform: "uppercase",
+    letterSpacing: 0.5,
+  },
+});

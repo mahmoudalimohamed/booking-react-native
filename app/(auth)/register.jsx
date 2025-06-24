@@ -236,6 +236,17 @@ const Register = () => {
               </View>
             ) : null}
           </View>
+
+          {/* Register Link */}
+          <View style={styles.loginContainer}>
+            <Text style={styles.loginText}>Already have account ? </Text>
+            <TouchableOpacity
+              onPress={() => router.push("/login")}
+              disabled={isSubmitting}
+            >
+              <Text style={styles.loginLink}>Sign In</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </ScrollView>
     </KeyboardAvoidingView>
@@ -391,5 +402,23 @@ const styles = StyleSheet.create({
   errorMessage: {
     color: "#DC2626",
     backgroundColor: "#FEF2F2",
+  },
+  loginContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 24,
+    paddingTop: 20,
+    borderTopWidth: 1,
+    borderTopColor: "#E5E7EB",
+  },
+  loginText: {
+    fontSize: 16,
+    color: "#6B7280",
+  },
+  loginLink: {
+    fontSize: 16,
+    color: "#10b981",
+    fontWeight: "600",
   },
 });
