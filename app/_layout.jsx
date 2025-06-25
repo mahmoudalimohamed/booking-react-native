@@ -10,9 +10,10 @@ import { StatusBar } from "expo-status-bar";
 import { Platform, StatusBar as RNStatusBar, View } from "react-native";
 import "react-native-reanimated";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import { UserProvider } from "../contexts/UserContext";
+import { AuthProvider } from "../contexts/AuthContext";
 import "../global.css";
 import useColorScheme from "../hooks/useColorScheme";
+
 const queryClient = new QueryClient();
 
 export default function RootLayout() {
@@ -27,7 +28,7 @@ export default function RootLayout() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <UserProvider>
+      <AuthProvider>
         <SafeAreaProvider>
           <ThemeProvider
             value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
@@ -49,7 +50,7 @@ export default function RootLayout() {
             </View>
           </ThemeProvider>
         </SafeAreaProvider>
-      </UserProvider>
+      </AuthProvider>
     </QueryClientProvider>
   );
 }

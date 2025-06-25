@@ -1,0 +1,33 @@
+# Node and package manager
+node_modules
+npm-debug.log
+yarn-error.log
+
+# Build artifacts
+android/.gradle
+android/.idea
+android/build
+*.apk
+*.aab
+
+# Expo and cache
+.expo
+.expo-shared
+
+# Editor/IDE config
+.vscode
+*.swp
+*.log
+
+# Static assets (optional — keep only if your assets are huge and remotely hosted)
+assets/images/tmp
+assets/tmp
+
+# Testing (if you use tests)
+__tests__
+coverage
+jest.config.js
+
+# Environment and secret files (if any)
+.env
+.env.*

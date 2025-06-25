@@ -4,8 +4,8 @@
     "slug": "booking",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/logo.svg",
-    "scheme": "booking",
+    "icon": "./assets/images/logo.png",
+    "scheme": "bookingappmaher",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
@@ -13,31 +13,39 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/logo.svg",
+        "foregroundImage": "./assets/images/logo.png",
         "backgroundColor": "#ffffff"
       },
-      "edgeToEdgeEnabled": true
+      "edgeToEdgeEnabled": true,
+      "package": "com.mahmoud_ali.booking"
     },
     "web": {
       "bundler": "metro",
       "output": "static",
-      "favicon": "./assets/images/logo.svg"
+      "favicon": "./assets/images/logo.png"
     },
     "plugins": [
       "expo-router",
       [
         "expo-splash-screen",
         {
-          "image": "./assets/images/logo.svg",
+          "image": "./assets/images/logo.png",
           "imageWidth": 200,
           "resizeMode": "contain",
           "backgroundColor": "#ffffff"
         }
       ],
-      "expo-web-browser"
+      "expo-web-browser",
+      "expo-dev-client"
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "aefe8b62-9550-4851-8ed7-928bae735532"
+      }
     }
   }
 }

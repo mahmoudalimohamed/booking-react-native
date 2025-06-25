@@ -13,7 +13,7 @@ export const LoginApi = async (email, password) => {
   });
 };
 
-export const logoutApi = async (refreshToken, accessToken) => {
+export const LogoutApi = async (refreshToken, accessToken) => {
   return axios.post(
     `${baseURL}logout/`,
     { refresh: refreshToken },
@@ -21,15 +21,15 @@ export const logoutApi = async (refreshToken, accessToken) => {
   );
 };
 
-export const refreshAccessTokenApi = async (refreshToken) => {
+export const RefreshAccessTokenApi = async (refreshToken) => {
   return axios.post(`${baseURL}token/refresh/`, { refresh: refreshToken });
 };
 
-export const forgotPasswordApi = async (email) => {
+export const ForgotPasswordApi = async (email) => {
   return axios.post(`${baseURL}password_reset/`, { email });
 };
 
-export const resetPasswordApi = async (token, uid, password) => {
+export const ResetPasswordApi = async (token, uid, password) => {
   return axios.post(`${baseURL}password_reset/confirm/`, {
     token,
     uid,

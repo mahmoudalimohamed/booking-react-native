@@ -10,7 +10,6 @@ import {
   View,
 } from "react-native";
 import { appConfig } from "../../data/config";
-import { useUser } from "../../hooks/useUser";
 
 export default function HomeScreen() {
   const {
@@ -23,8 +22,6 @@ export default function HomeScreen() {
     courses,
   } = appConfig;
 
-  const { user } = useUser();
-  const name = user?.name || "Visitor";
   const [selectedCategory, setSelectedCategory] = useState("All");
   const filteredCourses =
     selectedCategory === "All"
@@ -49,7 +46,7 @@ export default function HomeScreen() {
               </View>
               <View>
                 <Text className="text-lg font-semibold text-gray-800">
-                  Hello, {name}
+                  Hello, {instructor.name}
                 </Text>
                 <Text className="text-gray-500 text-sm">
                   {appConfig.welcomeMessage}

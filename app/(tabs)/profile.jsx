@@ -8,11 +8,12 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { useAuth } from "../../contexts/AuthContext";
 import { appConfig } from "../../data/config";
-import { useUser } from "../../hooks/useUser";
 
 export default function ProfileScreen() {
-  const { user, logout } = useUser();
+  const { logout, user } = useAuth();
+
   const name = user?.name || "Visitor";
   const email = user?.email || "";
   const userId = user?.targets?.[0]?.userId || "";

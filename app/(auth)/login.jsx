@@ -11,9 +11,10 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { LoginApi } from "../../api/auth";
+import { useAuth } from "../../contexts/AuthContext";
 
 const Login = () => {
+  const { login, loading: authLoading } = useAuth();
   const {
     register,
     handleSubmit,
@@ -54,27 +55,28 @@ const Login = () => {
 
   const onSubmit = async ({ email, password }) => {
     setIsSubmitting(true);
-    console.log("Logging in:", { email, password });
+    setMessage("");
+
     try {
-      const response = await LoginApi(email, password);
-      console.log("Login success:", response.data);
-      setMessage("Login Successful.");
-      setTimeout(() => router.replace("/"), 1000);
-    } catch (error) {
-      console.error(
-        "Login failed:",
-        error.response?.data,
-        error.response?.status
-      );
-      if (error.response?.data) {
-        Object.entries(error.response.data).forEach(([field, msgs]) => {
-          setError(field, { type: "server", message: msgs[0] });
-        });
-        setMessage("Login Failed.");
+      const result = await login(email, password);
+
+      if (result.success) {
+        setMessage("Login Successful.");
+        setTimeout(() => router.replace("/"), 1000);
       } else {
-        setMessage("Error: Something went wrong.");
-        alert("Unexpected error, check the console");
+        // Handle server validation errors
+        if (result.errors && typeof result.errors === "object") {
+          Object.entries(result.errors).forEach(([field, msgs]) => {
+            if (Array.isArray(msgs)) {
+              setError(field, { type: "server", message: msgs[0] });
+            }
+          });
+        }
+        setMessage(result.message || "Login Failed.");
       }
+    } catch (error) {
+      console.error("Unexpected login error:", error);
+      setMessage("Error: Something went wrong.");
     } finally {
       setIsSubmitting(false);
     }
@@ -106,11 +108,11 @@ const Login = () => {
                 keyboardType="email-address"
                 autoCapitalize="none"
                 value={email}
-                editable={!isSubmitting}
+                editable={!isSubmitting && !authLoading}
                 style={[
                   styles.input,
                   errors.email && styles.inputError,
-                  isSubmitting && styles.disabledInput,
+                  (isSubmitting || authLoading) && styles.disabledInput,
                 ]}
                 onChangeText={(text) => setValue("email", text)}
                 placeholderTextColor="#9CA3AF"
@@ -127,14 +129,14 @@ const Login = () => {
                 style={[
                   styles.passwordContainer,
                   errors.password && styles.inputError,
-                  isSubmitting && styles.disabledInput,
+                  (isSubmitting || authLoading) && styles.disabledInput,
                 ]}
               >
                 <TextInput
                   placeholder="Enter your password"
                   secureTextEntry={!showPassword}
                   value={password}
-                  editable={!isSubmitting}
+                  editable={!isSubmitting && !authLoading}
                   style={styles.passwordInput}
                   onChangeText={(text) => setValue("password", text)}
                   placeholderTextColor="#9CA3AF"
@@ -142,7 +144,7 @@ const Login = () => {
                 <TouchableOpacity
                   onPress={() => setShowPassword((prev) => !prev)}
                   style={styles.toggleButton}
-                  disabled={isSubmitting}
+                  disabled={isSubmitting || authLoading}
                 >
                   <Text style={styles.toggleText}>
                     {showPassword ? "Hide" : "Show"}
@@ -156,13 +158,16 @@ const Login = () => {
 
             {/* Submit Button */}
             <TouchableOpacity
-              style={[styles.button, isSubmitting && styles.disabledButton]}
+              style={[
+                styles.button,
+                (isSubmitting || authLoading) && styles.disabledButton,
+              ]}
               onPress={handleSubmit(onSubmit)}
-              disabled={isSubmitting}
+              disabled={isSubmitting || authLoading}
               activeOpacity={0.8}
             >
               <Text style={styles.buttonText}>
-                {isSubmitting ? "Signing In..." : "Sign In"}
+                {isSubmitting || authLoading ? "Signing In..." : "Sign In"}
               </Text>
             </TouchableOpacity>
 
@@ -181,14 +186,35 @@ const Login = () => {
                 </Text>
               </View>
             ) : null}
+
             {/* Register Link */}
-            <View style={styles.registerContainer}>
-              <Text style={styles.registerText}>Don't have an account? </Text>
+            <View style={styles.linkContainer}>
+              <Text style={styles.linkText}>Don't have an account? </Text>
               <TouchableOpacity
                 onPress={() => router.push("/register")}
-                disabled={isSubmitting}
+                disabled={isSubmitting || authLoading}
               >
-                <Text style={styles.registerLink}>Sign Up</Text>
+                <Text style={styles.linkSubText}>Sign Up</Text>
+              </TouchableOpacity>
+            </View>
+
+            {/* forgetpassword Link */}
+            <View style={styles.linkContainer}>
+              <TouchableOpacity
+                onPress={() => router.push("/forgotPassword")}
+                disabled={isSubmitting || authLoading}
+              >
+                <Text style={styles.linkSubText}> Forgot your password?</Text>
+              </TouchableOpacity>
+            </View>
+
+            {/* Home link */}
+            <View style={styles.linkContainer}>
+              <TouchableOpacity
+                onPress={() => router.replace("/")}
+                disabled={isSubmitting || authLoading}
+              >
+                <Text style={styles.linkSubText}>Back to Home</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -347,7 +373,7 @@ const styles = StyleSheet.create({
     color: "#DC2626",
     backgroundColor: "#FEF2F2",
   },
-  registerContainer: {
+  linkContainer: {
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
@@ -356,11 +382,11 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: "#E5E7EB",
   },
-  registerText: {
+  linkText: {
     fontSize: 16,
     color: "#6B7280",
   },
-  registerLink: {
+  linkSubText: {
     fontSize: 16,
     color: "#10b981",
     fontWeight: "600",
