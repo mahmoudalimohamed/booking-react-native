@@ -83,7 +83,11 @@ export const AuthProvider = ({ children }) => {
   const refreshToken = async () => {
     try {
       const refresh = await AsyncStorage.getItem("refresh");
-      if (!refresh) throw new Error("No Refresh Tolken");
+      if (!refresh) {
+        console.warn("No refresh token found. User needs to log in again.");
+        await logout();
+        return false;
+      }
 
       const response = await RefreshAccessTokenApi(refresh);
       await AsyncStorage.setItem("access", response.data.access);

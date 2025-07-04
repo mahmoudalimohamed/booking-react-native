@@ -78,7 +78,12 @@ const TripSearch = () => {
 
     const startArea = findAreaById(departure.areaId);
     const destinationArea = findAreaById(arrival.areaId);
-    const formattedDate = selectedDate.toISOString().split("T")[0];
+    //const formattedDate = selectedDate.toISOString().split("T")[0];
+
+    const day = String(selectedDate.getDate()).padStart(2, "0");
+    const month = String(selectedDate.getMonth() + 1).padStart(2, "0");
+    const year = String(selectedDate.getFullYear());
+    const formattedDate = `${year}-${month}-${day}`;
 
     const params = {
       start_city: startArea?.cityId || "",

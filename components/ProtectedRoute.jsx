@@ -5,6 +5,7 @@ import { useAuth } from "../contexts/AuthContext";
 
 export const ProtectedRoute = ({ children }) => {
   const { isAuthenticated, loading } = useAuth();
+  console.log("ProtectedRoute:", { isAuthenticated, loading }); // Add this line
 
   useEffect(() => {
     if (!loading && !isAuthenticated) {

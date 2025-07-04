@@ -1,5 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { router } from "expo-router";
+import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 const TripsResultSection = ({
   trips,
@@ -26,6 +27,31 @@ const TripsResultSection = ({
     }
   };
 
+  // Check if trip has available seats
+  const hasAvailableSeats = (trip) => {
+    return trip.available_seats && trip.available_seats > 0;
+  };
+
+  // Handle booking attempt
+  const handleBookingPress = (trip) => {
+    if (!hasAvailableSeats(trip)) {
+      Alert.alert(
+        "No Seats Available",
+        "Sorry, this trip is fully booked. Please select another trip or try different dates.",
+        [{ text: "OK", style: "default" }]
+      );
+      return;
+    }
+
+    router.replace({
+      pathname: "/TripBookingScreen",
+      params: {
+        tripId: trip.id,
+        trip: JSON.stringify(trip),
+      },
+    });
+  };
+
   if (!searchPerformed) return null;
 
   return (
@@ -38,14 +64,25 @@ const TripsResultSection = ({
       {trips.length > 0 ? (
         <View style={styles.tripCardsList}>
           {trips.map((trip, index) => {
+            const isAvailable = hasAvailableSeats(trip);
+
             return (
               <TouchableOpacity
                 key={trip.id}
-                style={styles.featuredTripCard}
+                style={[
+                  styles.featuredTripCard,
+                  !isAvailable && styles.unavailableTripCard,
+                ]}
                 activeOpacity={0.95}
+                disabled={!isAvailable}
               >
                 {/* Header with gradient background */}
-                <View style={styles.tripCardHeader}>
+                <View
+                  style={[
+                    styles.tripCardHeader,
+                    !isAvailable && styles.unavailableTripHeader,
+                  ]}
+                >
                   <View style={styles.routeContainer}>
                     <Text style={styles.routeFromText}>
                       {trip.start_location}
@@ -59,10 +96,16 @@ const TripsResultSection = ({
                     </View>
                     <Text style={styles.routeToText}>{trip.destination}</Text>
                   </View>
-
-                  <View style={styles.statusBadge}>
+                  <View
+                    style={[
+                      styles.statusBadge,
+                      !isAvailable && styles.unavailableStatusBadge,
+                    ]}
+                  >
                     <Text style={styles.statusBadgeText}>
-                      {trip.bus_type || "Standard"}
+                      {!isAvailable
+                        ? "FULLY BOOKED"
+                        : trip.bus_type || "Standard"}
                     </Text>
                   </View>
                 </View>
@@ -82,10 +125,26 @@ const TripsResultSection = ({
                   </View>
 
                   {/* Available Seats */}
-                  <View style={styles.tripMetrics}>
-                    <Ionicons name="people-outline" size={18} color="#059669" />
-                    <Text style={styles.metricText}>
-                      {trip.available_seats || 0} Available Seats
+                  <View
+                    style={[
+                      styles.tripMetrics,
+                      !isAvailable && styles.unavailableMetrics,
+                    ]}
+                  >
+                    <Ionicons
+                      name="people-outline"
+                      size={18}
+                      color={isAvailable ? "#059669" : "#ef4444"}
+                    />
+                    <Text
+                      style={[
+                        styles.metricText,
+                        !isAvailable && styles.unavailableMetricText,
+                      ]}
+                    >
+                      {isAvailable
+                        ? `${trip.available_seats} Available Seats`
+                        : "No Seats Available"}
                     </Text>
                   </View>
 
@@ -93,16 +152,32 @@ const TripsResultSection = ({
                   <View style={styles.priceActionContainer}>
                     <View style={styles.priceContainer}>
                       <Text style={styles.priceLabel}>Total Price</Text>
-                      <Text style={styles.tripPrice}>
+                      <Text
+                        style={[
+                          styles.tripPrice,
+                          !isAvailable && styles.unavailablePrice,
+                        ]}
+                      >
                         {formatPrice(trip.price)}
                       </Text>
                     </View>
-
                     <TouchableOpacity
-                      style={styles.continueButton}
-                      activeOpacity={0.8}
+                      style={[
+                        styles.continueButton,
+                        !isAvailable && styles.unavailableButton,
+                      ]}
+                      onPress={() => handleBookingPress(trip)}
+                      activeOpacity={isAvailable ? 0.8 : 1}
+                      disabled={!isAvailable}
                     >
-                      <Text style={styles.continueButtonText}>Book Now</Text>
+                      <Text
+                        style={[
+                          styles.continueButtonText,
+                          !isAvailable && styles.unavailableButtonText,
+                        ]}
+                      >
+                        {isAvailable ? "Book Now" : "Fully Booked"}
+                      </Text>
                     </TouchableOpacity>
                   </View>
                 </View>
@@ -120,9 +195,6 @@ const TripsResultSection = ({
             We couldn't find any trips matching your search criteria. Try
             adjusting your dates or destinations.
           </Text>
-          <TouchableOpacity style={styles.retryButton} activeOpacity={0.8}>
-            <Text style={styles.retryButtonText}>Search Again</Text>
-          </TouchableOpacity>
         </View>
       ) : null}
     </View>
@@ -136,7 +208,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 16,
   },
-
   // Header Section
   cardHeader: {
     flexDirection: "row",
@@ -144,7 +215,6 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     marginBottom: 20,
   },
-
   // Title
   cardTitle: {
     fontSize: 24,
@@ -152,12 +222,10 @@ const styles = StyleSheet.create({
     color: "#1a1a1a",
     letterSpacing: -0.5,
   },
-
   // Trips List Container
   tripCardsList: {
     gap: 16,
   },
-
   // Featured Trip Card - Modern card design
   featuredTripCard: {
     backgroundColor: "#ffffff",
@@ -172,7 +240,12 @@ const styles = StyleSheet.create({
     borderColor: "#f0f0f0",
     overflow: "hidden",
   },
-
+  // Unavailable trip card styling
+  unavailableTripCard: {
+    opacity: 0.7,
+    backgroundColor: "#f9fafb",
+    borderColor: "#e5e7eb",
+  },
   // Gradient header section
   tripCardHeader: {
     backgroundColor: "#4f46e5",
@@ -180,12 +253,14 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
     position: "relative",
   },
-
+  // Unavailable trip header
+  unavailableTripHeader: {
+    backgroundColor: "#6b7280",
+  },
   // Route container
   routeContainer: {
     marginBottom: 16,
   },
-
   // Route text styling
   routeFromText: {
     fontSize: 18,
@@ -193,20 +268,17 @@ const styles = StyleSheet.create({
     color: "#ffffff",
     marginBottom: 4,
   },
-
   routeToText: {
     fontSize: 18,
     fontWeight: "600",
     color: "#ffffff",
     opacity: 0.9,
   },
-
   // Route separator
   routeArrow: {
     alignSelf: "flex-start",
     marginVertical: 8,
   },
-
   // Status Badge
   statusBadge: {
     backgroundColor: "rgba(255, 255, 255, 0.2)",
@@ -215,7 +287,10 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     alignSelf: "flex-start",
   },
-
+  // Unavailable status badge
+  unavailableStatusBadge: {
+    backgroundColor: "rgba(239, 68, 68, 0.2)",
+  },
   statusBadgeText: {
     color: "#ffffff",
     fontSize: 12,
@@ -223,12 +298,10 @@ const styles = StyleSheet.create({
     textTransform: "uppercase",
     letterSpacing: 0.5,
   },
-
   // Card content section
   cardContent: {
     padding: 20,
   },
-
   // Detail Item
   detailItem: {
     flexDirection: "row",
@@ -239,7 +312,6 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     borderRadius: 12,
   },
-
   // Detail Text
   detailText: {
     color: "#374151",
@@ -248,7 +320,6 @@ const styles = StyleSheet.create({
     marginLeft: 12,
     flex: 1,
   },
-
   // Trip Metrics Container
   tripMetrics: {
     flexDirection: "row",
@@ -259,7 +330,10 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     marginBottom: 20,
   },
-
+  // Unavailable metrics styling
+  unavailableMetrics: {
+    backgroundColor: "#fef2f2",
+  },
   // Metric Text
   metricText: {
     color: "#059669",
@@ -267,7 +341,10 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     marginLeft: 12,
   },
-
+  // Unavailable metric text
+  unavailableMetricText: {
+    color: "#ef4444",
+  },
   // Price Action Container
   priceActionContainer: {
     flexDirection: "row",
@@ -277,26 +354,26 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: "#f1f5f9",
   },
-
   // Trip Price
   priceContainer: {
     flex: 1,
   },
-
   priceLabel: {
     fontSize: 12,
     color: "#6b7280",
     fontWeight: "500",
     marginBottom: 4,
   },
-
   tripPrice: {
     color: "#1a1a1a",
     fontSize: 24,
     fontWeight: "700",
     letterSpacing: -0.5,
   },
-
+  // Unavailable price styling
+  unavailablePrice: {
+    color: "#9ca3af",
+  },
   // Continue Button - Modern gradient button
   continueButton: {
     backgroundColor: "#10b981",
@@ -310,7 +387,12 @@ const styles = StyleSheet.create({
     elevation: 6,
     minWidth: 120,
   },
-
+  // Unavailable button styling
+  unavailableButton: {
+    backgroundColor: "#9ca3af",
+    shadowColor: "#9ca3af",
+    shadowOpacity: 0.1,
+  },
   continueButtonText: {
     color: "#ffffff",
     fontWeight: "700",
@@ -318,7 +400,11 @@ const styles = StyleSheet.create({
     textAlign: "center",
     letterSpacing: 0.5,
   },
-
+  // Unavailable button text
+  unavailableButtonText: {
+    color: "#ffffff",
+    opacity: 0.8,
+  },
   // No Trips Card
   noTripsCard: {
     backgroundColor: "#ffffff",
@@ -333,7 +419,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#f0f0f0",
   },
-
   noTripsIcon: {
     width: 80,
     height: 80,
@@ -343,7 +428,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     marginBottom: 20,
   },
-
   noTripsTitle: {
     fontSize: 20,
     fontWeight: "700",
@@ -351,7 +435,6 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     textAlign: "center",
   },
-
   noTripsSubtitle: {
     color: "#6b7280",
     textAlign: "center",
@@ -359,7 +442,6 @@ const styles = StyleSheet.create({
     fontSize: 15,
     lineHeight: 22,
   },
-
   retryButton: {
     backgroundColor: "#4f46e5",
     paddingHorizontal: 24,
@@ -371,7 +453,6 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 3,
   },
-
   retryButtonText: {
     color: "#ffffff",
     fontWeight: "600",

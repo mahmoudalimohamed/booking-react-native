@@ -1,5 +1,4 @@
 import { FontAwesome } from "@expo/vector-icons";
-import Ionicons from "@expo/vector-icons/Ionicons";
 import { Tabs } from "expo-router";
 import useColorScheme from "../../hooks/useColorScheme";
 export default function TabsLayout() {
@@ -35,16 +34,6 @@ export default function TabsLayout() {
             <FontAwesome name="search" size={24} color={color} />
           ),
           href: "/search",
-        }}
-      />
-      <Tabs.Screen
-        name="stations"
-        options={{
-          title: "stations",
-          tabBarIcon: ({ color }) => (
-            <Ionicons name="bus" size={24} color={color} />
-          ),
-          href: "/stations",
         }}
       />
       <Tabs.Screen
