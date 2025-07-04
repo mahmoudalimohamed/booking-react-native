@@ -56,7 +56,8 @@ export const redirectToPaymentApi = (paymentKey) => {
 
 export const bookingDetailApi = async (orderId) => {
   const headers = await getAuthHeaders();
-  return axios.get(`${BASE_URL}/bookings/detail/${orderId}/`, {
+  const url = `${BASE_URL}/bookings/detail/${orderId}/`;
+  return axios.get(url, {
     headers,
   });
 };

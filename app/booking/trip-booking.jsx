@@ -1,5 +1,4 @@
-import { useNavigation } from "@react-navigation/native";
-import { useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import {
   Modal,
@@ -18,13 +17,12 @@ import {
   redirectToPaymentApi,
   tripBookingApi,
   userProfileApi,
-} from "../api/bookingApi";
-import BusLayout from "../components/bookingScreen/BusLayout";
-import MiniBusLayout from "../components/bookingScreen/MiniBusLayout";
-import { ProtectedRoute } from "../components/ProtectedRoute";
+} from "../../api/bookingApi";
+import BusLayout from "../../components/bookingScreen/BusLayout";
+import MiniBusLayout from "../../components/bookingScreen/MiniBusLayout";
+import { ProtectedRoute } from "../../components/ProtectedRoute";
 
 const TripBookingScreen = () => {
-  const navigation = useNavigation();
   const { tripId, trip } = useLocalSearchParams();
   let tripInfo = trip;
   try {
@@ -48,11 +46,13 @@ const TripBookingScreen = () => {
   const [userType, setUserType] = useState(null);
   const [customerName, setCustomerName] = useState("");
   const [customerPhone, setCustomerPhone] = useState("");
+  const [userProfile, setUserProfile] = useState(null);
 
   const loadUserType = useCallback(async () => {
     try {
       const { data } = await userProfileApi();
       setUserType(data.user.user_type);
+      setUserProfile(data.user); // Store the full user profile
     } catch (err) {
       setErrorMessage("Failed to fetch user type.");
       console.error("User type loading error:", err);
@@ -182,12 +182,53 @@ const TripBookingScreen = () => {
 
         // Navigate to WebView payment screen instead of external browser
         const paymentUrl = redirectToPaymentApi(paymentKey);
-        navigation.navigate("PaymentWebView", { paymentUrl });
+        
+        // Create a complete booking object with trip details
+        const completeBookingData = {
+          ...booking,
+          trip: {
+            start_location: tripInfo?.start_location,
+            destination: tripInfo?.destination,
+            departure_date: tripInfo?.departure_date,
+            bus_type: tripInfo?.bus_type,
+          },
+          customer_name: userType === "Admin" ? customerName : userProfile?.name,
+          customer_phone: userType === "Admin" ? customerPhone : userProfile?.phone_number,
+        };
+        
+        router.push({
+          pathname: "/booking/payment",
+          params: { 
+            paymentUrl, 
+            orderId: order_id,
+            bookingData: JSON.stringify(completeBookingData) // Pass booking data for online payments
+          },
+        });
       } else {
         if (redirect_url) {
-          console.log("Redirect URL:", redirect_url);
+          // Handle redirect if needed
         } else {
-          navigation.navigate("BookingSuccess");
+          // Create a complete booking object with trip details
+          const completeBookingData = {
+            ...booking,
+            trip: {
+              start_location: tripInfo?.start_location,
+              destination: tripInfo?.destination,
+              departure_date: tripInfo?.departure_date,
+              bus_type: tripInfo?.bus_type,
+            },
+            customer_name: userType === "Admin" ? customerName : userProfile?.name,
+            customer_phone: userType === "Admin" ? customerPhone : userProfile?.phone_number,
+          };
+          
+          router.replace({
+            pathname: "/booking/success",
+            params: { 
+              orderId: order_id, 
+              success: "true",
+              bookingData: JSON.stringify(completeBookingData)
+            },
+          });
         }
       }
     } catch (err) {
@@ -236,6 +277,14 @@ const TripBookingScreen = () => {
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView style={styles.scrollView}>
+        {/* Back to Search Button */}
+        <TouchableOpacity
+          style={styles.backToSearchButton}
+          onPress={() => router.push("/(tabs)/search")}
+        >
+          <Text style={styles.backToSearchText}>← Back to Search</Text>
+        </TouchableOpacity>
+
         {/* Trip Info Card */}
         {tripInfo && (
           <View style={styles.card}>
@@ -497,6 +546,21 @@ const styles = StyleSheet.create({
   scrollView: {
     flex: 1,
     padding: 16,
+  },
+  backToSearchButton: {
+    backgroundColor: "#F3F4F6",
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    borderRadius: 8,
+    marginBottom: 16,
+    borderWidth: 1,
+    borderColor: "#E5E7EB",
+  },
+  backToSearchText: {
+    color: "#A62C2C",
+    fontSize: 16,
+    fontWeight: "500",
+    textAlign: "center",
   },
   card: {
     backgroundColor: "white",

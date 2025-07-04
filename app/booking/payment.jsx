@@ -1,21 +1,17 @@
-import { useNavigation, useRoute } from "@react-navigation/native";
-import { useRouter } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { useRef, useState } from "react";
 import {
-  Alert,
-  SafeAreaView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
+    Alert,
+    SafeAreaView,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View,
 } from "react-native";
 import { WebView } from "react-native-webview";
 
 const PaymentWebViewScreen = () => {
-  const route = useRoute();
-  const router = useRouter();
-  const navigation = useNavigation();
-  const { paymentUrl } = route.params || {};
+  const { paymentUrl, orderId, bookingData } = useLocalSearchParams();
   const webViewRef = useRef(null);
   const [canGoBack, setCanGoBack] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -28,7 +24,7 @@ const PaymentWebViewScreen = () => {
           <Text style={styles.errorText}>No payment URL provided</Text>
           <TouchableOpacity
             style={styles.backButton}
-            onPress={() => navigation.goBack()}
+            onPress={() => router.back()}
           >
             <Text style={styles.backButtonText}>Go Back</Text>
           </TouchableOpacity>
@@ -42,12 +38,21 @@ const PaymentWebViewScreen = () => {
 
     // Check if payment is completed based on URL changes
     if (navState.url.includes("success") || navState.url.includes("callback")) {
-      // Payment successful - navigate to success screen
-      if (router && router.push) {
-        router.push("/BookingSuccess");
-      } else {
-        navigation.navigate("BookingSuccess");
+      // Payment successful - navigate to success screen with orderId and booking data
+      const params = { 
+        orderId: orderId || "unknown", 
+        success: "true"
+      };
+      
+      // Pass booking data if available (for online payments)
+      if (bookingData) {
+        params.bookingData = bookingData;
       }
+      
+      router.replace({
+        pathname: "/booking/success",
+        params
+      });
     } else if (
       navState.url.includes("error") ||
       navState.url.includes("failed")
@@ -59,7 +64,7 @@ const PaymentWebViewScreen = () => {
         [
           {
             text: "OK",
-            onPress: () => navigation.goBack(),
+            onPress: () => router.back(),
           },
         ]
       );
@@ -75,7 +80,7 @@ const PaymentWebViewScreen = () => {
         "Are you sure you want to cancel the payment?",
         [
           { text: "No", style: "cancel" },
-          { text: "Yes", onPress: () => navigation.goBack() },
+          { text: "Yes", onPress: () => router.back() },
         ]
       );
     }
@@ -89,7 +94,7 @@ const PaymentWebViewScreen = () => {
       "Failed to load payment page. Please check your internet connection and try again.",
       [
         { text: "Retry", onPress: () => webViewRef.current?.reload() },
-        { text: "Cancel", onPress: () => navigation.goBack() },
+        { text: "Cancel", onPress: () => router.back() },
       ]
     );
   };

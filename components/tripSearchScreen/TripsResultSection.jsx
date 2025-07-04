@@ -43,8 +43,8 @@ const TripsResultSection = ({
       return;
     }
 
-    router.replace({
-      pathname: "/TripBookingScreen",
+    router.push({
+      pathname: "/booking/trip-booking",
       params: {
         tripId: trip.id,
         trip: JSON.stringify(trip),
